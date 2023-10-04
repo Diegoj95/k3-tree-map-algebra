@@ -99,6 +99,10 @@ target_link_libraries(k3_tree_LIDAR_encode sdsl divsufsort divsufsort64 las)
 add_executable(k3_tree_get src/k3_tree_get.cpp ${SOURCES} )
 target_link_libraries(k3_tree_get sdsl divsufsort divsufsort64 las)
 
+# Query Thresh
+add_executable(k3_tree_thresh src/map_algebra/threshold.cpp ${SOURCES} )
+target_link_libraries(k3_tree_thresh sdsl divsufsort divsufsort64 las)
+
 # Query GET REGION
 add_executable(k3_tree_get_region src/k3_tree_get_region.cpp ${SOURCES} )
 target_link_libraries(k3_tree_get_region sdsl divsufsort divsufsort64 las)

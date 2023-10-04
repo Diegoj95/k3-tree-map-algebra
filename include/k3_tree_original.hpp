@@ -359,41 +359,30 @@ class k3_tree : public k3_tree_base<>
         size_type children_pos = 0;
         uint8_t k = k_k1;
 
-        std::cout<< "submatriz_size_l = " << submatrix_size_l << std::endl;
 
-        std::cout<< "k = " << k_k1 << std::endl;
-        for(int i=0; i<k_t_rank.size(); i++){
-            std::cout << k_t_rank (i) << " " ;
-        }
-        std::cout << std::endl;
         for (uint16_t l = 0; l < k_height-1; l++) {
             submatrix_size_l /= k;
-            std::cout << "submatriz("<< l << ") = " << submatrix_size_l << std::endl;
             node_pos = (pos_x / submatrix_size_l) * k * k + pos_y / submatrix_size_l * k + pos_z / submatrix_size_l;
             node_pos += children_pos;
-            std::cout << "node_pos(" << l << ") = " << node_pos << std::endl;
+
             if (k_t[node_pos] == 0) {
                 return false; // Empty submatrix
             } else {
                 // Go to next level
                 children_pos = k_t_rank (node_pos+1) * k_k1_3;
             }
-            std::cout << "children_pos(" << l << ") = " << children_pos << std::endl;
+
             // Calculate local position on the current submatrix
             pos_x %= submatrix_size_l;
             pos_y %= submatrix_size_l;
             pos_z %= submatrix_size_l;
-            std::cout << "x=" << pos_x << " y=" << pos_y << " z=" << pos_z << "   ("<< l << ")" << std::endl;
         }
 
 
         // Last level
         submatrix_size_l /= k;
-        std::cout << "submatrix_size_l (last level) = " << submatrix_size_l << std::endl;
         node_pos = (pos_x / submatrix_size_l) * k * k + pos_y / submatrix_size_l * k + pos_z / submatrix_size_l;
         node_pos += children_pos;
-        std::cout << "node_pos = " << node_pos << " \nchildren_pos = " << children_pos << " (last level)" << std::endl;
-        std::cout << "k_l[" << (node_pos-k_t.size()) << ", con k_t.size=" << k_t.size() << std::endl;
         return (k_l[node_pos - k_t.size()] == 1);
     }
 
@@ -588,30 +577,17 @@ class k3_tree : public k3_tree_base<>
         std::cout << "k3-tree with size " << k_size << " and height " << k_height << std::endl;
         std::cout << "k1 = " << (uint)k_k1 << " | k2 = " << (uint)k_k2 << std::endl;
         std::cout << "Bitmap t (size " << k_t.size() << ") : ";
-        for (size_type p = 0; p < k_t.size(); p++) {
-            if(p%8==0){
-                std::cout << " ";
-            }
-            std::cout << k_t[p];
-        }
+//        for (size_type p = 0; p < k_t.size(); p++) {
+//            std::cout << k_t[p];
+//        }
         std::cout << std::endl;
         std::cout << "Bitmap l (size " << k_l.size() << ") : ";
-        for (size_type p = 0; p < k_l.size(); p++) {
-            if(p%8==0){
-                std::cout << " ";
-            }
-            std::cout << k_l[p];
-        }
+//        for (size_type p = 0; p < k_l.size(); p++) {
+//            std::cout << k_l[p];
+//        }
         std::cout << std::endl;
         return;
     }
-
-    ///////////getters
-    virtual t_bv get_k_t() {return k_t;}
-    virtual t_bv get_k_l() {return k_l;}
-    virtual uint8_t get_k_k1() {return k_k1;}
-    virtual uint16_t get_k_height() {return k_height;}
-    virtual t_rank get_k_t_rank() {return k_t_rank;}
 
 }; // ENC CLASS k3-tree
 

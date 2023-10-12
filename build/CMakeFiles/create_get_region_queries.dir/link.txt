@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++11 -Wall -Wextra  -msse4.2 -O3 -DNDEBUG -msse4.2 -O3 -ffast-math -funroll-loops -fno-omit-frame-pointer -g -rdynamic CMakeFiles/create_get_region_queries.dir/src/test/create_get_region_queries.cpp.o -o bin/create_get_region_queries  lib/libsdsl.a lib/libdivsufsort.a lib/libdivsufsort64.a lib/liblas.a 

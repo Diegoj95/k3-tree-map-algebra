@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../../../lib/libdivsufsort.a CMakeFiles/divsufsort.dir/divsufsort.o CMakeFiles/divsufsort.dir/sssort.o CMakeFiles/divsufsort.dir/trsort.o CMakeFiles/divsufsort.dir/utils.o
+/usr/bin/ranlib ../../../../../lib/libdivsufsort.a

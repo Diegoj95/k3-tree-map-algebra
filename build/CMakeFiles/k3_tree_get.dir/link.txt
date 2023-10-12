@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++11 -Wall -Wextra  -msse4.2 -O3 -DNDEBUG -msse4.2 -O3 -ffast-math -funroll-loops -fno-omit-frame-pointer -g -rdynamic CMakeFiles/k3_tree_get.dir/src/k3_tree_get.cpp.o -o bin/k3_tree_get  lib/libsdsl.a lib/libdivsufsort.a lib/libdivsufsort64.a lib/liblas.a 

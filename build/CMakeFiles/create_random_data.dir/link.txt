@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++11 -Wall -Wextra  -msse4.2 -O3 -DNDEBUG -msse4.2 -O3 -ffast-math -funroll-loops -fno-omit-frame-pointer -g -rdynamic CMakeFiles/create_random_data.dir/src/test/create_random_file.cpp.o -o bin/create_random_data  lib/libsdsl.a lib/libdivsufsort.a lib/libdivsufsort64.a 

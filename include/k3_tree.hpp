@@ -606,12 +606,83 @@ class k3_tree : public k3_tree_base<>
         return;
     }
 
-    ///////////getters
-    virtual t_bv get_k_t() {return k_t;}
-    virtual t_bv get_k_l() {return k_l;}
-    virtual uint8_t get_k_k1() {return k_k1;}
-    virtual uint16_t get_k_height() {return k_height;}
-    virtual t_rank get_k_t_rank() {return k_t_rank;}
+    bool threshold(int pos_x, int pos_y) {
+    
+        int min = 0;
+        int max = 0;
+        size_t submatrix_size_l = k_size;
+        size_t node_pos;
+        size_t children_pos = 0;
+        uint8_t k = k_k1;
+        size_t k_k1_3 = pow(k, 3);
+
+        std::cout<< "submatriz_size_l = " << submatrix_size_l << std::endl;
+        std::cout<< "k = " << unsigned(k) << std::endl;
+        std::cout<< "k_t_rank = ";
+        for(int i=0; i<k_t_rank.size(); i++){
+            std::cout << k_t_rank (i) << " " ;
+        }
+        std::cout << std::endl;
+        
+        std::cout << "k_height = " << unsigned(k_height) << std::endl;
+
+        std::cout<< "k_t = ";
+        for(int i=0; i<k_t.size(); i++){
+            if(i%8==0 && i!=0){
+                std::cout << " ";
+            }
+            std::cout << k_t[i];
+        }
+        std::cout << std::endl;
+
+        std::cout<< "k_l = ";
+        for(int i=0; i<k_l.size(); i++){
+            if(i%8==0 && i!=0){
+                std::cout << " ";
+            }
+            std::cout << k_l[i];
+        }
+        std::cout << std::endl;  
+ 
+
+        int factor_t = 0;
+        int height = unsigned(k_height);
+        bit_vector k_t_thresh = bit_vector(factor_t, 0);
+
+        for(int i=1; i<=height; i++){
+            factor_t += pow(4, height-i)*8;   
+        }
+        std::cout << "factor_t = " << factor_t << std::endl;
+
+
+        for(int i=0; i<factor_t; i++){
+            if(!i%2){
+                k_t_thresh[i] = 1;
+            }
+        }
+        //k_k1_3 * k_height * points.size()
+        std::cout<< "k_t_thresh = ";
+        for(int i=0; i<k_t_thresh.size(); i++){
+            if(i%8==0 && i!=0){
+                std::cout << " ";
+            }
+            std::cout << k_t_thresh[i];
+        }
+        std::cout << std::endl;
+
+        t_bv k_t_result = t_bv(k_t_thresh);
+
+        std::cout<< "k_t_result = ";
+        for(int i=0; i<k_t_result.size(); i++){
+            if(i%8==0 && i!=0){
+                std::cout << " ";
+            }
+            std::cout << k_t_result[i];
+        }
+        std::cout << std::endl;
+          
+        return true;  
+    }
 
 }; // ENC CLASS k3-tree
 

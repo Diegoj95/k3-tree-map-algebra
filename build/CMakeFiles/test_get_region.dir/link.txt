@@ -1,1 +1,0 @@
-/usr/bin/c++  -std=c++11 -Wall -Wextra  -msse4.2 -O3 -DNDEBUG -msse4.2 -O3 -ffast-math -funroll-loops -fno-omit-frame-pointer -g -rdynamic CMakeFiles/test_get_region.dir/src/test/test_get_region.cpp.o -o bin/test_get_region  lib/libsdsl.a lib/libdivsufsort.a lib/libdivsufsort64.a 

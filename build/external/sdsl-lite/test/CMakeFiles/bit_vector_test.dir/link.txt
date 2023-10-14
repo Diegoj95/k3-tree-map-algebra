@@ -1,1 +1,0 @@
-/usr/bin/c++  -std=c++11 -Wall -Wextra  -msse4.2 -std=c++11 -Wall -Wextra -DNDEBUG -O3 -DNDEBUG -msse4.2 -O3 -ffast-math -funroll-loops -fno-omit-frame-pointer -g -rdynamic CMakeFiles/bit_vector_test.dir/bit_vector_test.cpp.o -o ../../../bin/bit_vector_test  ../../../lib/libsdsl.a ../../../lib/libgtest.a ../../../lib/libdivsufsort.a ../../../lib/libdivsufsort64.a 

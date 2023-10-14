@@ -1,1 +1,0 @@
-/usr/bin/c++  -std=c++11 -Wall -Wextra  -msse4.2 -O3 -DNDEBUG -msse4.2 -O3 -ffast-math -funroll-loops -fno-omit-frame-pointer -g -rdynamic CMakeFiles/test_k3_tree_LIDAR.dir/src/test/test_k3_tree_LIDAR.cpp.o -o bin/test_k3_tree_LIDAR  lib/libsdsl.a lib/libdivsufsort.a lib/libdivsufsort64.a lib/liblas.a 

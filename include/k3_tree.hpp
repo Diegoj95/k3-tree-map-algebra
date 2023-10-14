@@ -649,19 +649,20 @@ class k3_tree : public k3_tree_base<>
         int height = unsigned(k_height);
         bit_vector k_t_thresh = bit_vector(factor_t, 0);
 
-        for(int i=1; i<=height; i++){
-            factor_t += pow(4, height-i)*8;   
+        for(int i=0; i<height-1; i++){
+            factor_t += pow(4, i)*8;   
         }
         std::cout << "factor_t = " << factor_t << std::endl;
 
 
         for(int i=0; i<factor_t; i++){
-            if(!i%2){
+            if(i%2 == 0){
                 k_t_thresh[i] = 1;
             }
         }
-        //k_k1_3 * k_height * points.size()
+        
         std::cout<< "k_t_thresh = ";
+        
         for(int i=0; i<k_t_thresh.size(); i++){
             if(i%8==0 && i!=0){
                 std::cout << " ";
@@ -669,19 +670,8 @@ class k3_tree : public k3_tree_base<>
             std::cout << k_t_thresh[i];
         }
         std::cout << std::endl;
-
-        t_bv k_t_result = t_bv(k_t_thresh);
-
-        std::cout<< "k_t_result = ";
-        for(int i=0; i<k_t_result.size(); i++){
-            if(i%8==0 && i!=0){
-                std::cout << " ";
-            }
-            std::cout << k_t_result[i];
-        }
-        std::cout << std::endl;
           
-        return true;  
+        return true;
     }
 
 }; // ENC CLASS k3-tree

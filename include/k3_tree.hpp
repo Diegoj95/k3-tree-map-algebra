@@ -606,6 +606,11 @@ class k3_tree : public k3_tree_base<>
         return;
     }
 
+    void threshold2(t_bv k_t_, size_t np){
+        std::cout << "Entrada A: " << k_t_[np] << std::endl;
+        std::cout << "Entrada B: " << k_t_[np+1] << std::endl;
+    }
+
     bool threshold(int pos_x, int pos_y) {
     
         int min = 0;
@@ -663,13 +668,17 @@ class k3_tree : public k3_tree_base<>
         
         std::cout<< "k_t_thresh = ";
         
-        for(int i=0; i<k_t_thresh.size(); i++){
+        for(int i=0; i<factor_t; i++){
             if(i%8==0 && i!=0){
                 std::cout << " ";
             }
             std::cout << k_t_thresh[i];
         }
         std::cout << std::endl;
+
+        for(int i=0; i<4; i++){
+            threshold2(k_t, (size_t)i*2);
+        }
           
         return true;
     }

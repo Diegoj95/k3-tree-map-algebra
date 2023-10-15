@@ -41,8 +41,7 @@ namespace sdsl {
 
 template<uint8_t t_k1=2, uint8_t t_k2=2,
         typename t_bv=bit_vector,
-        typename t_rank=typename t_bv::rank_1_type,
-        typename t_real_pos_type=int_vector<>::size_type>
+        typename t_rank=typename t_bv::rank_1_type>
 class k3_tree : public k3_tree_base<>
 {
 
@@ -607,33 +606,61 @@ class k3_tree : public k3_tree_base<>
         return;
     }
 
-    void threshold2(t_bv k_t_, size_t np, int height_per_node, int height_, 
-                    t_real_pos_type x_min, t_real_pos_type x_max,
-                    t_real_pos_type y_min, t_real_pos_type y_max,
-                    t_real_pos_type z_min, t_real_pos_type z_max){
-
-        std::cout << "height actual: " << height_per_node << std::endl;
-        std::cout << "x: (" << x_min << "," << x_max << ") ";
-        std::cout << " y: (" << y_min << "," << y_max << ") ";
-        std::cout << " z: (" << z_min << "," << z_max << ") " << std::endl;
-        std::cout << "Entrada A: " << k_t_[np] << " en el nodo: " << np << " ";
-        std::cout << "Entrada B: " << k_t_[np+1] << " en el nodo: " << np+1 << " ";
-        if(height_per_node <= height_){
+    void threshold2(t_bv k_t_, size_t np, int height_per_node, 
+                    int height_, size_type submatrix,
+                    pos_type x_min, pos_type x_max,
+                    pos_type y_min, pos_type y_max,
+                    pos_type z_min, pos_type z_max,
+                    pos_type x, pos_type y, pos_type z){
+        std::cout << "height total: " << height_ << std::endl;
+        if(height_per_node < height_){
+            std::cout << "height actual: " << height_per_node << std::endl;
+            std::cout << "x: (" << x_min << "," << x_max << ") ";
+            std::cout << " y: (" << y_min << "," << y_max << ") ";
+            std::cout << " z: (" << z_min << "," << z_max << ") " << std::endl;
+            std::cout << "Entrada A: " << k_t_[np] << " en el nodo: " << np << " ";
+            std::cout << "Entrada B: " << k_t_[np+1] << " en el nodo: " << np+1 << " ";
             if(k_t_[np] == 0 && k_t_[np+1] == 0){
                 std::cout << " no hago nada" << std::endl;
             }else if(k_t_[np] == 0 && k_t_[np+1] == 1){
                 std::cout << " me voy a la derecha" << std::endl;
-                
+                submatrix /= k_k1;
+                size_type cp = k_t_rank (np+2) * k_k1_3;
+                std::cout << "submatrix " << submatrix << std::endl;
+                std::cout << "np " << np << std::endl;
+                std::cout << "cp " << cp << "    k_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
+                std::cout << std::endl;
+                threshold2(k_t_, cp, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, ((z_min+z_max)/2)+1, z_max, x, y, z);
             }else if(k_t_[np] == 1 && k_t_[np+1] == 0){
                 std::cout << " me voy a la izquierda" << std::endl;
             }else{
                 std::cout << " me voy a ambos lados" << std::endl;
             }
+        } else {
+            return;
         }
+
+        // for (uint16_t l = 0; l < k_height-1; l++) {
+        //     submatrix_size_l /= k;
+
+        //     node_pos = (pos_x / submatrix_size_l) * k * k + pos_y / submatrix_size_l * k + pos_z / submatrix_size_l;
+        //     node_pos += children_pos;
+
+        //     if (k_t[node_pos] == 0) {
+        //         return false; // Empty submatrix
+        //     } else {
+        //         // Go to next level
+        //         children_pos = k_t_rank (node_pos+1) * k_k1_3;
+        //     }
+
+        //     // Calculate local position on the current submatrix
+        //     pos_x %= submatrix_size_l;
+        //     pos_y %= submatrix_size_l;
+        //     pos_z %= submatrix_size_l;
 
     }
 
-    bool threshold(int pos_x, int pos_y) {
+    bool threshold(int thresh) {
     
         size_t submatrix_size_l = k_size;
         size_t node_pos;
@@ -701,14 +728,19 @@ class k3_tree : public k3_tree_base<>
         }
         std::cout << std::endl;
 
-        t_real_pos_type x_max = get_max_size_x()-1;
-        t_real_pos_type y_max = get_max_size_y()-1;
-        t_real_pos_type z_max = get_max_size_z()-1;
+        pos_type x_max = get_max_size_x()-1;
+        pos_type y_max = get_max_size_y()-1;
+        pos_type z_max = get_max_size_z()-1;
 
-        threshold2(k_t, (size_t) 0, 1, height, 0, x_max/2, 0, y_max/2, 0, z_max);
-        threshold2(k_t, (size_t) 2, 1, height, 0, x_max/2, ((0+y_max)/2)+1, y_max, 0, z_max);
-        threshold2(k_t, (size_t) 4, 1, height, ((0+x_max)/2)+1, x_max, 0, y_max/2, 0, z_max);
-        threshold2(k_t, (size_t) 6, 1, height, ((0+x_max)/2)+1, x_max, ((0+y_max)/2)+1, y_max, 0, z_max);
+        // size_type cp0 = k_t_rank (1) * k_k1_3;
+        // size_type cp1 = k_t_rank (3) * k_k1_3;
+        // size_type cp2 = k_t_rank (5) * k_k1_3;
+        // size_type cp3 = k_t_rank (7) * k_k1_3;
+
+        threshold2(k_t, (size_t) 0, 1, height, submatrix_size_l, 0, x_max/2, 0, y_max/2, 0, z_max, 0, 0, thresh);
+        threshold2(k_t, (size_t) 2, 1, height, submatrix_size_l, 0, x_max/2, (y_max/2)+1, y_max, 0, z_max, 0, (y_max/2)+1, thresh);
+        threshold2(k_t, (size_t) 4, 1, height, submatrix_size_l, (x_max/2)+1, x_max, 0, y_max/2, 0, z_max, (x_max/2)+1, 0, thresh);
+        threshold2(k_t, (size_t) 6, 1, height, submatrix_size_l, (x_max/2)+1, x_max, (y_max/2)+1, y_max, 0, z_max, (x_max/2)+1, (y_max/2)+1, thresh);
         
         return true;
 

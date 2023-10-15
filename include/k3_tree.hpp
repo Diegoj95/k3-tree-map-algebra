@@ -620,8 +620,10 @@ class k3_tree : public k3_tree_base<>
             std::cout << " z: (" << z_min << "," << z_max << ") " << std::endl;
             std::cout << "Entrada A: " << k_t_[np] << " en el nodo: " << np << " ";
             std::cout << "Entrada B: " << k_t_[np+1] << " en el nodo: " << np+1 << " ";
+
             if(k_t_[np] == 0 && k_t_[np+1] == 0){
                 std::cout << " no hago nada" << std::endl;
+
             }else if(k_t_[np] == 0 && k_t_[np+1] == 1){
                 std::cout << " me voy a la derecha" << std::endl;
                 submatrix /= k_k1;
@@ -631,10 +633,30 @@ class k3_tree : public k3_tree_base<>
                 std::cout << "cp " << cp << "    k_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
                 std::cout << std::endl;
                 threshold2(k_t_, cp, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, ((z_min+z_max)/2)+1, z_max, x, y, z);
+
             }else if(k_t_[np] == 1 && k_t_[np+1] == 0){
                 std::cout << " me voy a la izquierda" << std::endl;
+                submatrix /= k_k1;
+                size_type cp = k_t_rank (np+1) * k_k1_3;
+                std::cout << "submatrix " << submatrix << std::endl;
+                std::cout << "np " << np << std::endl;
+                std::cout << "cp " << cp << "    k_t_rank " << k_t_rank (np+1) * k_k1_3 << std::endl;
+                std::cout << std::endl;
+                threshold2(k_t_, cp, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, z_min, ((z_min+z_max)/2), x, y, z);
+
             }else{
                 std::cout << " me voy a ambos lados" << std::endl;
+                // submatrix /= k_k1;
+                // size_type cp0 = k_t_rank (np+1) * k_k1_3;
+                // size_type cp1 = k_t_rank (np+2) * k_k1_3;
+                // std::cout << "submatrix " << submatrix << std::endl;
+                // std::cout << "np " << np << std::endl;
+                // std::cout << "cp0 " << cp0 << "    k_t_rank " << k_t_rank (np+1) * k_k1_3 << std::endl;
+                // std::cout << "cp1 " << cp1 << "    k_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
+                // std::cout << std::endl;
+                // threshold2(k_t_, cp0, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, z_min, ((z_min+z_max)/2), x, y, z);
+                // threshold2(k_t_, cp1, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, ((z_min+z_max)/2)+1, z_max, x, y, z);
+
             }
         } else {
             return;

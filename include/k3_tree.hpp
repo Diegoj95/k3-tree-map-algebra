@@ -41,7 +41,8 @@ namespace sdsl {
 
 template<uint8_t t_k1=2, uint8_t t_k2=2,
         typename t_bv=bit_vector,
-        typename t_rank=typename t_bv::rank_1_type>
+        typename t_rank=typename t_bv::rank_1_type,
+        typename t_real_pos_type=int_vector<>::size_type>
 class k3_tree : public k3_tree_base<>
 {
 
@@ -606,21 +607,41 @@ class k3_tree : public k3_tree_base<>
         return;
     }
 
-    void threshold2(t_bv k_t_, size_t np){
-        std::cout << "Entrada A: " << k_t_[np] << std::endl;
-        std::cout << "Entrada B: " << k_t_[np+1] << std::endl;
+    void threshold2(t_bv k_t_, size_t np, int height_per_node, int height_, 
+                    t_real_pos_type x_min, t_real_pos_type x_max,
+                    t_real_pos_type y_min, t_real_pos_type y_max,
+                    t_real_pos_type z_min, t_real_pos_type z_max){
+
+        std::cout << "height actual: " << height_per_node << std::endl;
+        std::cout << "x: (" << x_min << "," << x_max << ") ";
+        std::cout << " y: (" << y_min << "," << y_max << ") ";
+        std::cout << " z: (" << z_min << "," << z_max << ") " << std::endl;
+        std::cout << "Entrada A: " << k_t_[np] << " en el nodo: " << np << " ";
+        std::cout << "Entrada B: " << k_t_[np+1] << " en el nodo: " << np+1 << " ";
+        if(height_per_node <= height_){
+            if(k_t_[np] == 0 && k_t_[np+1] == 0){
+                std::cout << " no hago nada" << std::endl;
+            }else if(k_t_[np] == 0 && k_t_[np+1] == 1){
+                std::cout << " me voy a la derecha" << std::endl;
+                
+            }else if(k_t_[np] == 1 && k_t_[np+1] == 0){
+                std::cout << " me voy a la izquierda" << std::endl;
+            }else{
+                std::cout << " me voy a ambos lados" << std::endl;
+            }
+        }
+
     }
 
     bool threshold(int pos_x, int pos_y) {
     
-        int min = 0;
-        int max = 0;
         size_t submatrix_size_l = k_size;
         size_t node_pos;
         size_t children_pos = 0;
         uint8_t k = k_k1;
         size_t k_k1_3 = pow(k, 3);
 
+        ///////// PRINT ///////////
         std::cout<< "submatriz_size_l = " << submatrix_size_l << std::endl;
         std::cout<< "k = " << unsigned(k) << std::endl;
         std::cout<< "k_t_rank = ";
@@ -629,8 +650,10 @@ class k3_tree : public k3_tree_base<>
         }
         std::cout << std::endl;
         
+        ///////// PRINT ///////////
         std::cout << "k_height = " << unsigned(k_height) << std::endl;
 
+        ///////// PRINT ///////////
         std::cout<< "k_t = ";
         for(int i=0; i<k_t.size(); i++){
             if(i%8==0 && i!=0){
@@ -640,6 +663,7 @@ class k3_tree : public k3_tree_base<>
         }
         std::cout << std::endl;
 
+        ///////// PRINT ///////////
         std::cout<< "k_l = ";
         for(int i=0; i<k_l.size(); i++){
             if(i%8==0 && i!=0){
@@ -649,7 +673,6 @@ class k3_tree : public k3_tree_base<>
         }
         std::cout << std::endl;  
  
-
         int factor_t = 0;
         int height = unsigned(k_height);
         bit_vector k_t_thresh = bit_vector(factor_t, 0);
@@ -657,6 +680,8 @@ class k3_tree : public k3_tree_base<>
         for(int i=0; i<height-1; i++){
             factor_t += pow(4, i)*8;   
         }
+
+        ///////// PRINT ///////////
         std::cout << "factor_t = " << factor_t << std::endl;
 
 
@@ -666,8 +691,8 @@ class k3_tree : public k3_tree_base<>
             }
         }
         
+        ///////// PRINT ///////////
         std::cout<< "k_t_thresh = ";
-        
         for(int i=0; i<factor_t; i++){
             if(i%8==0 && i!=0){
                 std::cout << " ";
@@ -676,11 +701,19 @@ class k3_tree : public k3_tree_base<>
         }
         std::cout << std::endl;
 
-        for(int i=0; i<4; i++){
-            threshold2(k_t, (size_t)i*2);
-        }
-          
+        t_real_pos_type x_max = get_max_size_x()-1;
+        t_real_pos_type y_max = get_max_size_y()-1;
+        t_real_pos_type z_max = get_max_size_z()-1;
+
+        threshold2(k_t, (size_t) 0, 1, height, 0, x_max/2, 0, y_max/2, 0, z_max);
+        threshold2(k_t, (size_t) 2, 1, height, 0, x_max/2, ((0+y_max)/2)+1, y_max, 0, z_max);
+        threshold2(k_t, (size_t) 4, 1, height, ((0+x_max)/2)+1, x_max, 0, y_max/2, 0, z_max);
+        threshold2(k_t, (size_t) 6, 1, height, ((0+x_max)/2)+1, x_max, ((0+y_max)/2)+1, y_max, 0, z_max);
+        
         return true;
+
+        //k3_tree& operator=(k3_tree& tr)
+        
     }
 
 }; // ENC CLASS k3-tree

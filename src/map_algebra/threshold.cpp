@@ -19,7 +19,7 @@ void run_thresh(std::string k3_tree_file_in, size_t thresh){
 
     k3_tree_type k3_tree;
     k3_tree.load(input_file);
-    k3_tree.threshold(5);
+    k3_tree.threshold(thresh);
     input_file.close();
   
 }

@@ -613,6 +613,10 @@ class k3_tree : public k3_tree_base<>
                     pos_type z_min, pos_type z_max,
                     pos_type x, pos_type y, pos_type z){
         std::cout << "height total: " << height_ << std::endl;
+        // cambiar nombre de parametro z
+        
+        // final condition
+        
         if(height_per_node < height_){
             std::cout << "height actual: " << height_per_node << std::endl;
             std::cout << "x: (" << x_min << "," << x_max << ") ";
@@ -626,6 +630,9 @@ class k3_tree : public k3_tree_base<>
 
             // }else 
             if(k_t_[np] == 0 && k_t_[np+1] == 1){
+                
+                z_min = ((z_min+z_max)/2)+1;
+
                 std::cout << " me voy a la derecha" << std::endl;
                 submatrix /= k_k1;
                 size_type cp = k_t_rank (np+2) * k_k1_3;
@@ -633,9 +640,12 @@ class k3_tree : public k3_tree_base<>
                 std::cout << "np " << np << std::endl;
                 std::cout << "cp " << cp << "    k_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
                 std::cout << std::endl;
-                threshold2(k_t_, cp, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, ((z_min+z_max)/2)+1, z_max, x, y, z);
+                threshold2(k_t_, k_l_, cp, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, z_min, z_max, x_min, y_min, z);
 
             }else if(k_t_[np] == 1 && k_t_[np+1] == 0){
+
+                z_max = ((z_min+z_max)/2);
+
                 std::cout << " me voy a la izquierda" << std::endl;
                 submatrix /= k_k1;
                 size_type cp = k_t_rank (np+1) * k_k1_3;
@@ -643,7 +653,7 @@ class k3_tree : public k3_tree_base<>
                 std::cout << "np " << np << std::endl;
                 std::cout << "cp " << cp << "    k_t_rank " << k_t_rank (np+1) * k_k1_3 << std::endl;
                 std::cout << std::endl;
-                threshold2(k_t_, cp, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, z_min, ((z_min+z_max)/2), x, y, z);
+                threshold2(k_t_, k_l_, cp, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, z_min, z_max, x_min, y_min, z);
 
             }else{
                 std::cout << " me voy a ambos lados" << std::endl;
@@ -656,23 +666,71 @@ class k3_tree : public k3_tree_base<>
                 std::cout << "cp1 " << cp1 << "    k_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
                 std::cout << std::endl;
                 // left
-                threshold2(k_t_, cp0, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, z_min, ((z_min+z_max)/2), x, y, z);
+                threshold2(k_t_, k_l_, cp0, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, z_min, ((z_min+z_max)/2), x_min, y_min, z);
                 // right
-                threshold2(k_t_, cp1, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, ((z_min+z_max)/2)+1, z_max, x, y, z);
+                threshold2(k_t_, k_l_, cp1, height_per_node+1, height_, submatrix, x_min, x_max/2, y_min, y_max/2, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z);
             }
         } else {
 
-            // Last level
-            // submatrix_size_l /= k;
-            // std::cout << "submatrix_size_l (last level) = " << submatrix_size_l << std::endl;
-            // node_pos = (pos_x / submatrix_size_l) * k * k + pos_y / submatrix_size_l * k + pos_z / submatrix_size_l;
-            // node_pos += children_pos;
             std::cout << "np = " << np << " (last level)" << std::endl;
             size_t np0 = np-k_t.size();
             size_t np1 = np0+1; 
             std::cout << "k_l[" << (np0) << "], con k_t.size=" << k_t.size() << " igual a: " << k_l[np0] << std::endl;
             std::cout << "k_l[" << (np1) << "], con k_t.size=" << k_t.size() << " igual a: " << k_l[np1] << std::endl;
-            // return (k_l[node_pos - k_t.size()] == 1);
+            
+            // desicion           
+            if(k_l[np0]==0 && k_l[np1]==0){
+                std::cout << "Hoja con 0s" << std::endl;
+                //return
+            } else {
+                int rangex[2] = {0, pow(2, height_)-1};
+                int rangey[2] = {0, pow(2, height_)-1};
+                
+                int position = pow(4, height_-1)*8;
+                position /= 2;
+                int tmp, dist = position;
+                std::cout << "range_x: (" << rangex[0] << "," << rangex[1] << ")" << std::endl;
+                std::cout << "range_y: (" << rangey[0] << "," << rangey[1] << ")" << std::endl;
+                std::cout << "X: " << x_min << " Y: " << y_min << std::endl;
+                for(int i=0; rangex[0]!=rangex[1] || rangey[0]!=rangey[1]; i++){
+                    std::cout << "rangex["<< rangex[0] << "," << rangex[1] << "]" << std::endl;
+                    std::cout << "rangey["<< rangey[0] << "," << rangey[1] << "]" << std::endl;
+                    std::cout << "posicion kl: " << position << std::endl;
+                    dist /= 2;
+                    std::cout << "dist: " << dist << std::endl;
+                    std::cout << std::endl;
+                    if(i%2==0){
+                        tmp = (rangex[0]+rangex[1])/2;
+                        if(x_min<=tmp){
+                            rangex[1] = (rangex[0]+rangex[1])/2;
+                            position -= dist;
+                        } else {
+                            rangex[0] = ((rangex[0]+rangex[1])/2)+1;
+                            position += dist;
+                        }
+                    } else {
+                        tmp = (rangey[0]+rangey[1])/2;
+                        if(y_min<=tmp){
+                            rangey[1] = (rangey[0]+rangey[1])/2;
+                            position -= dist;
+                        } else {
+                            rangey[0] = ((rangey[0]+rangey[1])/2)+1;
+                            position += dist;
+                        }
+                    }
+                }
+                std::cout << "posicion de k_l: " << position << std::endl;
+
+                std::cout << "rango z: " << z_min << " " << z_max << std::endl;
+
+                if (k_l[np0]==1 && z>=z_min) {
+                    k_l_[position-1] = 1;
+                } else if(k_l[np1]==1 && z>=z_max) {
+                    k_l_[position] = 1;
+                }
+
+            }
+
             ///////// PRINT ///////////
             std::cout<< "k_l_thresh = ";
             for(int i=0; i<k_l_.size(); i++){
@@ -683,7 +741,6 @@ class k3_tree : public k3_tree_base<>
             }
             std::cout << std::endl;
 
-            return;
         }
 
     }
@@ -766,10 +823,12 @@ class k3_tree : public k3_tree_base<>
 
         // comnetario: borrar k_t como parametro, ya que es una variable perteneciente al objeto de por si
         // submatrix borrar, height ver si se reemplaza por k_height
-        threshold2(k_t, *k_l_thresh, (size_t) 0, 1, height, submatrix_size_l, 0, x_max/2, 0, y_max/2, 0, z_max, 0, 0, thresh);
-        threshold2(k_t, *k_l_thresh, (size_t) 2, 1, height, submatrix_size_l, 0, x_max/2, (y_max/2)+1, y_max, 0, z_max, 0, (y_max/2)+1, thresh);
-        threshold2(k_t, *k_l_thresh, (size_t) 4, 1, height, submatrix_size_l, (x_max/2)+1, x_max, 0, y_max/2, 0, z_max, (x_max/2)+1, 0, thresh);
-        threshold2(k_t, *k_l_thresh, (size_t) 6, 1, height, submatrix_size_l, (x_max/2)+1, x_max, (y_max/2)+1, y_max, 0, z_max, (x_max/2)+1, (y_max/2)+1, thresh);
+        // eliminar las coordenadas x e y (no confundir con los rangos de x e y)
+        // declarar k_t y k_l dentro de la funcion o como atributo de clase temporal
+        threshold2(k_t, k_l_thresh, (size_t) 0, 1, height, submatrix_size_l, 0, x_max/2, 0, y_max/2, 0, z_max, 0, 0, thresh);
+        threshold2(k_t, k_l_thresh, (size_t) 2, 1, height, submatrix_size_l, 0, x_max/2, (y_max/2)+1, y_max, 0, z_max, 0, (y_max/2)+1, thresh);
+        threshold2(k_t, k_l_thresh, (size_t) 4, 1, height, submatrix_size_l, (x_max/2)+1, x_max, 0, y_max/2, 0, z_max, (x_max/2)+1, 0, thresh);
+        threshold2(k_t, k_l_thresh, (size_t) 6, 1, height, submatrix_size_l, (x_max/2)+1, x_max, (y_max/2)+1, y_max, 0, z_max, (x_max/2)+1, (y_max/2)+1, thresh);
         
         return true;
 

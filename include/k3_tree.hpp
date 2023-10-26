@@ -606,33 +606,33 @@ class k3_tree : public k3_tree_base<>
         return;
     }
 
-    void threshold2(t_bv k_t_, t_bv &k_l_, size_t np, int height_per_node, 
+    void threshold2(t_bv &k_l_, size_t np, int height_per_node, 
                     int height_, size_type submatrix,
                     pos_type x_min, pos_type x_max,
                     pos_type y_min, pos_type y_max,
                     pos_type z_min, pos_type z_max,
                     pos_type x, pos_type y, pos_type z){
-        std::cout << "height total: " << height_;
+        // std::cout << "height total: " << height_;
         // cambiar nombre de parametro z
         
         if(height_per_node < height_){
-            std::cout << "\theight actual: " << height_per_node << std::endl;
-            std::cout << "x: (" << x_min << "," << x_max << ") ";
-            std::cout << " y: (" << y_min << "," << y_max << ") ";
-            std::cout << " z: (" << z_min << "," << z_max << ") " << std::endl;
-            std::cout << "k_t[" << np << "] = " << k_t_[np];
-            std::cout << "\tk_t[" << np+1 << "] = " << k_t_[np+1] << std::endl;
+            // std::cout << "\theight actual: " << height_per_node << std::endl;
+            // std::cout << "x: (" << x_min << "," << x_max << ") ";
+            // std::cout << " y: (" << y_min << "," << y_max << ") ";
+            // std::cout << " z: (" << z_min << "," << z_max << ") " << std::endl;
+            // std::cout << "k_t[" << np << "] = " << k_t[np];
+            // std::cout << "\tk_t[" << np+1 << "] = " << k_t[np+1] << std::endl;
             
-            // if(k_t_[np] == 0 && k_t_[np+1] == 0){
+            // if(k_t[np] == 0 && k_t[np+1] == 0){
             //     std::cout << " no hago nada" << std::endl;
 
             // }else 
-            if(k_t_[np] == 0 && k_t_[np+1] == 1){
+            if(k_t[np] == 0 && k_t[np+1] == 1){
                 
                 z_min = ((z_min+z_max)/2)+1;
-                std::cout << "z_min: " << z_min << "  >   thresh(" << z << ")" << " ---> ";
+                // std::cout << "z_min: " << z_min << "  >   thresh(" << z << ")" << " ---> ";
                 if (z < z_min) {
-                    std::cout << "Relleno a partir del nodo: " << np << " con 01 (mayor que T)" << std::endl;
+                    // std::cout << "Relleno a partir del nodo: " << np << " con 01 (mayor que T)" << std::endl;
                     
                     //std::cout << std::endl;
                     for(int i=x_min; i<=x_max; i++){
@@ -693,36 +693,38 @@ class k3_tree : public k3_tree_base<>
                     //std::cout << "i" << x_min << " " << x_max << "  j" << y_min << " " << y_max << std::endl;
 
                     ///////// PRINT ///////////
-                    std::cout<< "k_l_thresh = ";
-                    for(int i=0; i<k_l_.size(); i++){
-                        if(i%8==0 && i!=0){
-                            std::cout << " ";
-                        }
-                        std::cout << k_l_[i];
-                    }
-                    std::cout << "\n" << std::endl;
+                    // std::cout<< "k_l_thresh = ";
+                    // for(int i=0; i<k_l_.size(); i++){
+                    //     if(i%8==0 && i!=0){
+                    //         std::cout << " ";
+                    //     }
+                    //     std::cout << k_l_[i];
+                    // }
+                    // std::cout << "\n" << std::endl;
 
                     return;
                 }
                 
-                std::cout << " me voy a la derecha" << std::endl;
+                // std::cout << " me voy a la derecha" << std::endl;
                 submatrix /= k_k1;
                 size_type cp = k_t_rank (np+2) * k_k1_3;
                 // std::cout << "submatrix " << submatrix << std::endl;
-                std::cout << "np " << np;
-                std::cout << "\tcp " << cp << "\tk_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
-                std::cout << std::endl;
-                threshold2(k_t_, k_l_, cp, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
+                // std::cout << "np " << np;
+                // std::cout << "\tcp " << cp << "\tk_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
+                // std::cout << std::endl;
+                threshold2(k_l_, cp, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp+2, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp+4, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp+6, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, z_max, x_min, y_min, z);  
                 
                 
-                
-            }else if(k_t_[np] == 1 && k_t_[np+1] == 0){
+            }else if(k_t[np] == 1 && k_t[np+1] == 0){
 
                 z_max = ((z_min+z_max)/2);
-                std::cout << "z_max: " << z_max << "  <   thresh(" << z << ")" << std::endl;
+                // std::cout << "z_max: " << z_max << "  <   thresh(" << z << ")" << std::endl;
 
                 if (z > z_max) {
-                    std::cout << "Relleno a partir del nodo: " << np << " con 10 (menor que T)" << std::endl;
+                    // std::cout << "Relleno a partir del nodo: " << np << " con 10 (menor que T)" << std::endl;
                     
                     //std::cout << std::endl;
                     for(int i=x_min; i<=x_max; i++){
@@ -764,7 +766,6 @@ class k3_tree : public k3_tree_base<>
                                 }
 
                                 // std::cout << "tmp: " << tmp << std::endl;
-
                                 // std::cout << std::endl;
 
                             }
@@ -785,57 +786,65 @@ class k3_tree : public k3_tree_base<>
                     //std::cout << "i" << x_min << " " << x_max << "  j" << y_min << " " << y_max << std::endl;
                     
                     ///////// PRINT ///////////
-                    std::cout<< "k_l_thresh = ";
-                    for(int i=0; i<k_l_.size(); i++){
-                        if(i%8==0 && i!=0){
-                            std::cout << " ";
-                        }
-                        std::cout << k_l_[i];
-                    }
-                    std::cout << "\n" << std::endl;
+                    // std::cout<< "k_l_thresh = ";
+                    // for(int i=0; i<k_l_.size(); i++){
+                    //     if(i%8==0 && i!=0){
+                    //         std::cout << " ";
+                    //     }
+                    //     std::cout << k_l_[i];
+                    // }
+                    // std::cout << "\n" << std::endl;
 
 
 
                     return;
                 }
 
-                std::cout << " me voy a la izquierda" << std::endl;
+                // std::cout << " me voy a la izquierda" << std::endl;
                 submatrix /= k_k1;
                 size_type cp = k_t_rank (np+1) * k_k1_3;
-                std::cout << "submatrix " << submatrix << std::endl;
-                std::cout << "np " << np << std::endl;
-                std::cout << "cp " << cp << "    k_t_rank " << k_t_rank (np+1) * k_k1_3 << std::endl;
-                std::cout << std::endl;
-                threshold2(k_t_, k_l_, cp, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
-                
+                // std::cout << "submatrix " << submatrix << std::endl;
+                // std::cout << "np " << np << std::endl;
+                // std::cout << "cp " << cp << "    k_t_rank " << k_t_rank (np+1) * k_k1_3 << std::endl;
+                // std::cout << std::endl;
+                threshold2(k_l_, cp, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp+2, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp+4, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp+6, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, z_max, x_min, y_min, z);                 
             }else{
-                std::cout << " me voy a ambos lados" << std::endl;
+                // std::cout << " me voy a ambos lados" << std::endl;
                 submatrix /= k_k1;
                 size_type cp0 = k_t_rank (np+1) * k_k1_3; // left
                 size_type cp1 = k_t_rank (np+2) * k_k1_3; // right
                 // std::cout << "submatrix " << submatrix << std::endl;
-                std::cout << "np " << np << std::endl;
-                std::cout << "cp0 " << cp0 << "    k_t_rank " << k_t_rank (np+1) * k_k1_3 << std::endl;
-                std::cout << "cp1 " << cp1 << "    k_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
-                std::cout << std::endl;
+                // std::cout << "np " << np << std::endl;
+                // std::cout << "cp0 " << cp0 << "    k_t_rank " << k_t_rank (np+1) * k_k1_3 << std::endl;
+                // std::cout << "cp1 " << cp1 << "    k_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
+                // std::cout << std::endl;
                 // left
-                threshold2(k_t_, k_l_, cp0, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, ((z_min+z_max)/2), x_min, y_min, z);
+                threshold2(k_l_, cp0, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, ((z_min+z_max)/2), x_min, y_min, z);
+                threshold2(k_l_, cp0+2, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, ((z_min+z_max)/2), x_min, y_min, z);
+                threshold2(k_l_, cp0+4, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, ((z_min+z_max)/2), x_min, y_min, z);
+                threshold2(k_l_, cp0+6, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, ((z_min+z_max)/2), x_min, y_min, z); 
                 // right
-                threshold2(k_t_, k_l_, cp1, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp1, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp1+2, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp1+4, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp1+6, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z); 
                 
             }
 
         } else {
 
-            std::cout << "\nnp = " << np << " (last level)" << std::endl;
+            // std::cout << "\nnp = " << np << " (last level)" << std::endl;
             size_t np0 = np-k_t.size();
             size_t np1 = np0+1; 
-            std::cout << "k_l[" << (np0) << "] = " << k_l[np0] << ", con k_t.size=" << k_t.size() << std::endl;
-            std::cout << "k_l[" << (np1) << "] = " << k_l[np1] << ", con k_t.size=" << k_t.size() << std::endl;
+            // std::cout << "k_l[" << (np0) << "] = " << k_l[np0] << ", con k_t.size=" << k_t.size() << std::endl;
+            // std::cout << "k_l[" << (np1) << "] = " << k_l[np1] << ", con k_t.size=" << k_t.size() << std::endl;
             
             // desicion           
             if(k_l[np0]==0 && k_l[np1]==0){
-                std::cout << "Hoja con 0s" << std::endl;
+                // std::cout << "Hoja con 0s" << std::endl;
                 //return
             } else {
                 int rangex[2] = {0, pow(2, height_)-1};
@@ -844,16 +853,16 @@ class k3_tree : public k3_tree_base<>
                 int position = pow(4, height_-1)*8;
                 position /= 2;
                 int tmp, dist = position;
-                std::cout << "range_x: (" << rangex[0] << "," << rangex[1] << ")" << "\t";
-                std::cout << "range_y: (" << rangey[0] << "," << rangey[1] << ")" << "\t";
-                std::cout << "X: " << x_min << " Y: " << y_min << std::endl;
+                // std::cout << "range_x: (" << rangex[0] << "," << rangex[1] << ")" << "\t";
+                // std::cout << "range_y: (" << rangey[0] << "," << rangey[1] << ")" << "\t";
+                // std::cout << "X: " << x_min << " Y: " << y_min << std::endl;
                 for(int i=0; rangex[0]!=rangex[1] || rangey[0]!=rangey[1]; i++){
-                    std::cout << "rangex["<< rangex[0] << "," << rangex[1] << "]" << "\t";
-                    std::cout << "rangey["<< rangey[0] << "," << rangey[1] << "]" << std::endl;
-                    std::cout << "posicion k_l: " << position << "\t";
+                    // std::cout << "rangex["<< rangex[0] << "," << rangex[1] << "]" << "\t";
+                    // std::cout << "rangey["<< rangey[0] << "," << rangey[1] << "]" << std::endl;
+                    // std::cout << "posicion k_l: " << position << "\t";
                     dist /= 2;
-                    std::cout << "dist: " << dist << std::endl;
-                    std::cout << std::endl;
+                    // std::cout << "dist: " << dist << std::endl;
+                    // std::cout << std::endl;
                     if(i%2==0){
                         tmp = (rangex[0]+rangex[1])/2;
                         if(x_min<=tmp){
@@ -874,27 +883,40 @@ class k3_tree : public k3_tree_base<>
                         }
                     }
                 }
-                std::cout << "posicion de k_l: " << position << std::endl;
+                // std::cout << "posicion de k_l: " << position << std::endl;
 
-                std::cout << "rango z: " << z_min << " " << z_max << std::endl;
-                std::cout << "k_l: " << k_l[np0] << "  y " << k_l[np1] << std::endl;
-                if (k_l[np0]==1 && z<=z_min) { k_l_[position] = 1;} // greater than threshold
-                else if (k_l[np1]==1 && z<=z_max) { k_l_[position] = 1; }
-                else if (k_l[np0]==1 && z>z_min) { k_l_[position-1] = 1; } // lesser than threshold
-                else if (k_l[np1]==1 && z>z_max) { k_l_[position-1] = 1; }
-                
+                // std::cout << "rango z: " << z_min << " " << z_max << std::endl;
+                // std::cout << "k_l: " << k_l[np0] << "  y " << k_l[np1] << std::endl;
+                if (k_l[np0]==1 && z<=z_min) { // greater than threshold
+                    k_l_[position-1] = 0;
+                    k_l_[position] = 1;
+                } 
 
+                else if (k_l[np1]==1 && z<=z_max) {
+                    k_l_[position-1] = 0;
+                    k_l_[position] = 1; 
+                }
+
+                else if (k_l[np0]==1 && z>z_min) { // less than threshold
+                    k_l_[position-1] = 1; 
+                    k_l_[position] = 0;
+                } 
+
+                else if (k_l[np1]==1 && z>z_max) { 
+                    k_l_[position-1] = 1;
+                    k_l_[position] = 0; 
+                }
             }
 
             ///////// PRINT ///////////
-            std::cout<< "k_l_thresh = ";
-            for(int i=0; i<k_l_.size(); i++){
-                if(i%8==0 && i!=0){
-                    std::cout << " ";
-                }
-                std::cout << k_l_[i];
-            }
-            std::cout << std::endl;
+            // std::cout<< "k_l_thresh = ";
+            // for(int i=0; i<k_l_.size(); i++){
+            //     if(i%8==0 && i!=0){
+            //         std::cout << " ";
+            //     }
+            //     std::cout << k_l_[i];
+            // }
+            // std::cout << std::endl;
 
             
 
@@ -912,36 +934,36 @@ class k3_tree : public k3_tree_base<>
         size_t k_k1_3 = pow(k, 3);
 
         ///////// PRINT ///////////
-        std::cout<< "submatriz_size_l = " << submatrix_size_l << std::endl;
-        std::cout<< "k = " << unsigned(k) << std::endl;
-        std::cout<< "k_t_rank = ";
-        for(int i=0; i<k_t_rank.size(); i++){
-            std::cout << k_t_rank (i) << " " ;
-        }
-        std::cout << std::endl;
+        // std::cout<< "submatriz_size_l = " << submatrix_size_l << std::endl;
+        // std::cout<< "k = " << unsigned(k) << std::endl;
+        // std::cout<< "k_t_rank = ";
+        // for(int i=0; i<k_t_rank.size(); i++){
+        //     std::cout << k_t_rank (i) << " " ;
+        // }
+        // std::cout << std::endl;
         
         ///////// PRINT ///////////
-        std::cout << "k_height = " << unsigned(k_height) << std::endl;
+        // std::cout << "k_height = " << unsigned(k_height) << std::endl;
 
-        ///////// PRINT ///////////
-        std::cout<< "k_t = ";
-        for(int i=0; i<k_t.size(); i++){
-            if(i%8==0 && i!=0){
-                std::cout << " ";
-            }
-            std::cout << k_t[i];
-        }
-        std::cout << std::endl;
+        // ///////// PRINT ///////////
+        // std::cout<< "k_t = ";
+        // for(int i=0; i<k_t.size(); i++){
+        //     if(i%8==0 && i!=0){
+        //         std::cout << " ";
+        //     }
+        //     std::cout << k_t[i];
+        // }
+        // std::cout << std::endl;
 
-        ///////// PRINT ///////////
-        std::cout<< "k_l = ";
-        for(int i=0; i<k_l.size(); i++){
-            if(i%8==0 && i!=0){
-                std::cout << " ";
-            }
-            std::cout << k_l[i];
-        }
-        std::cout << std::endl;  
+        // ///////// PRINT ///////////
+        // std::cout<< "k_l = ";
+        // for(int i=0; i<k_l.size(); i++){
+        //     if(i%8==0 && i!=0){
+        //         std::cout << " ";
+        //     }
+        //     std::cout << k_l[i];
+        // }
+        // std::cout << std::endl;  
  
         int factor_t = 0;
         int height = unsigned(k_height);
@@ -954,7 +976,7 @@ class k3_tree : public k3_tree_base<>
         bit_vector k_t_thresh = bit_vector(factor_t, 0);
 
         ///////// PRINT ///////////
-        std::cout << "factor_t = " << factor_t << std::endl;
+        // std::cout << "factor_t = " << factor_t << std::endl;
 
 
         for(int i=0; i<factor_t; i++){
@@ -964,14 +986,14 @@ class k3_tree : public k3_tree_base<>
         }
         
         ///////// PRINT ///////////
-        std::cout<< "k_t_thresh = ";
-        for(int i=0; i<factor_t; i++){
-            if(i%8==0 && i!=0){
-                std::cout << " ";
-            }
-            std::cout << k_t_thresh[i];
-        }
-        std::cout << std::endl;
+        // std::cout<< "k_t_thresh = ";
+        // for(int i=0; i<factor_t; i++){
+        //     if(i%8==0 && i!=0){
+        //         std::cout << " ";
+        //     }
+        //     std::cout << k_t_thresh[i];
+        // }
+        // std::cout << std::endl;
 
         pos_type x_max = get_max_size_x()-1;
         pos_type y_max = get_max_size_y()-1;
@@ -983,14 +1005,14 @@ class k3_tree : public k3_tree_base<>
         // submatrix borrar, height ver si se reemplaza por k_height
         // eliminar las coordenadas x e y (no confundir con los rangos de x e y)
         // declarar k_t y k_l dentro de la funcion o como atributo de clase temporal
-        std::cout << "Entrada 1" << std::endl;
-        threshold2(k_t, k_l_thresh, (size_t) 0, 1, height, submatrix_size_l, 0, x_max/2, 0, y_max/2, 0, z_max, 0, 0, thresh);
-        std::cout << "Entrada 2" << std::endl;
-        threshold2(k_t, k_l_thresh, (size_t) 2, 1, height, submatrix_size_l, 0, x_max/2, (y_max/2)+1, y_max, 0, z_max, 0, (y_max/2)+1, thresh);
-        std::cout << "Entrada 3" << std::endl;
-        threshold2(k_t, k_l_thresh, (size_t) 4, 1, height, submatrix_size_l, (x_max/2)+1, x_max, 0, y_max/2, 0, z_max, (x_max/2)+1, 0, thresh);
-        std::cout << "Entrada 4" << std::endl;
-        threshold2(k_t, k_l_thresh, (size_t) 6, 1, height, submatrix_size_l, (x_max/2)+1, x_max, (y_max/2)+1, y_max, 0, z_max, (x_max/2)+1, (y_max/2)+1, thresh);
+        // std::cout << "Entrada 1" << std::endl;
+        threshold2(k_l_thresh, (size_t) 0, 1, height, submatrix_size_l, 0, x_max/2, 0, y_max/2, 0, z_max, 0, 0, thresh);
+        // std::cout << "Entrada 2" << std::endl;
+        threshold2(k_l_thresh, (size_t) 2, 1, height, submatrix_size_l, 0, x_max/2, (y_max/2)+1, y_max, 0, z_max, 0, (y_max/2)+1, thresh);
+        // std::cout << "Entrada 3" << std::endl;
+        threshold2(k_l_thresh, (size_t) 4, 1, height, submatrix_size_l, (x_max/2)+1, x_max, 0, y_max/2, 0, z_max, (x_max/2)+1, 0, thresh);
+        // std::cout << "Entrada 4" << std::endl;
+        threshold2(k_l_thresh, (size_t) 6, 1, height, submatrix_size_l, (x_max/2)+1, x_max, (y_max/2)+1, y_max, 0, z_max, (x_max/2)+1, (y_max/2)+1, thresh);
         
         std::cout << "\n\nK_t_T: " ;
         for(int i=0; i<factor_t; i++){

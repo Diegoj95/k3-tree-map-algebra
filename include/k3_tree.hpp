@@ -606,16 +606,15 @@ class k3_tree : public k3_tree_base<>
         return;
     }
 
-    void threshold2(t_bv &k_l_, size_t np, int height_per_node, 
-                    int height_, size_type submatrix,
+    void threshold2(t_bv &k_l_, size_t np, int height_per_node,
                     pos_type x_min, pos_type x_max,
                     pos_type y_min, pos_type y_max,
                     pos_type z_min, pos_type z_max,
                     pos_type x, pos_type y, pos_type z){
-        // std::cout << "height total: " << height_;
+        // std::cout << "height total: " << (int) k_height;
         // cambiar nombre de parametro z
         
-        if(height_per_node < height_){
+        if(height_per_node < k_height){
             // std::cout << "\theight actual: " << height_per_node << std::endl;
             // std::cout << "x: (" << x_min << "," << x_max << ") ";
             // std::cout << " y: (" << y_min << "," << y_max << ") ";
@@ -639,9 +638,9 @@ class k3_tree : public k3_tree_base<>
                         for(int j=y_min; j<=y_max; j++){
                              ///// TESTTTTTTT
                             // std::cout << "wasa" << std::endl;
-                            int rangex[2] = {0, pow(2, height_)-1};
-                            int rangey[2] = {0, pow(2, height_)-1};
-                            int position = pow(4, height_-1)*8;
+                            int rangex[2] = {0, pow(2, k_height)-1};
+                            int rangey[2] = {0, pow(2, k_height)-1};
+                            int position = pow(4, k_height-1)*8;
                             position /= 2;
                             int tmp, dist = position;
                             
@@ -706,16 +705,16 @@ class k3_tree : public k3_tree_base<>
                 }
                 
                 // std::cout << " me voy a la derecha" << std::endl;
-                submatrix /= k_k1;
+                // submatrix /= k_k1;
                 size_type cp = k_t_rank (np+2) * k_k1_3;
                 // std::cout << "submatrix " << submatrix << std::endl;
                 // std::cout << "np " << np;
                 // std::cout << "\tcp " << cp << "\tk_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
                 // std::cout << std::endl;
-                threshold2(k_l_, cp, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
-                threshold2(k_l_, cp+2, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, z_max, x_min, y_min, z);
-                threshold2(k_l_, cp+4, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
-                threshold2(k_l_, cp+6, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, z_max, x_min, y_min, z);  
+                threshold2(k_l_, cp, height_per_node+1, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp+2, height_per_node+1, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp+4, height_per_node+1, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp+6, height_per_node+1, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, z_max, x_min, y_min, z);  
                 
                 
             }else if(k_t[np] == 1 && k_t[np+1] == 0){
@@ -731,9 +730,9 @@ class k3_tree : public k3_tree_base<>
                         for(int j=y_min; j<=y_max; j++){
                              ///// TESTTTTTTT
                             // std::cout << "wasa" << std::endl;
-                            int rangex[2] = {0, pow(2, height_)-1};
-                            int rangey[2] = {0, pow(2, height_)-1};
-                            int position = pow(4, height_-1)*8;
+                            int rangex[2] = {0, pow(2, k_height)-1};
+                            int rangey[2] = {0, pow(2, k_height)-1};
+                            int position = pow(4, k_height-1)*8;
                             position /= 2;
                             int tmp, dist = position;
                             
@@ -801,19 +800,19 @@ class k3_tree : public k3_tree_base<>
                 }
 
                 // std::cout << " me voy a la izquierda" << std::endl;
-                submatrix /= k_k1;
+                // submatrix /= k_k1;
                 size_type cp = k_t_rank (np+1) * k_k1_3;
                 // std::cout << "submatrix " << submatrix << std::endl;
                 // std::cout << "np " << np << std::endl;
                 // std::cout << "cp " << cp << "    k_t_rank " << k_t_rank (np+1) * k_k1_3 << std::endl;
                 // std::cout << std::endl;
-                threshold2(k_l_, cp, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
-                threshold2(k_l_, cp+2, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, z_max, x_min, y_min, z);
-                threshold2(k_l_, cp+4, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
-                threshold2(k_l_, cp+6, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, z_max, x_min, y_min, z);                 
+                threshold2(k_l_, cp, height_per_node+1, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp+2, height_per_node+1, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp+4, height_per_node+1, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp+6, height_per_node+1, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, z_max, x_min, y_min, z);                 
             }else{
                 // std::cout << " me voy a ambos lados" << std::endl;
-                submatrix /= k_k1;
+                // submatrix /= k_k1;
                 size_type cp0 = k_t_rank (np+1) * k_k1_3; // left
                 size_type cp1 = k_t_rank (np+2) * k_k1_3; // right
                 // std::cout << "submatrix " << submatrix << std::endl;
@@ -822,15 +821,15 @@ class k3_tree : public k3_tree_base<>
                 // std::cout << "cp1 " << cp1 << "    k_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
                 // std::cout << std::endl;
                 // left
-                threshold2(k_l_, cp0, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, ((z_min+z_max)/2), x_min, y_min, z);
-                threshold2(k_l_, cp0+2, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, ((z_min+z_max)/2), x_min, y_min, z);
-                threshold2(k_l_, cp0+4, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, ((z_min+z_max)/2), x_min, y_min, z);
-                threshold2(k_l_, cp0+6, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, ((z_min+z_max)/2), x_min, y_min, z); 
+                threshold2(k_l_, cp0, height_per_node+1, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, ((z_min+z_max)/2), x_min, y_min, z);
+                threshold2(k_l_, cp0+2, height_per_node+1, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, ((z_min+z_max)/2), x_min, y_min, z);
+                threshold2(k_l_, cp0+4, height_per_node+1, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, ((z_min+z_max)/2), x_min, y_min, z);
+                threshold2(k_l_, cp0+6, height_per_node+1, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, ((z_min+z_max)/2), x_min, y_min, z); 
                 // right
-                threshold2(k_l_, cp1, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z);
-                threshold2(k_l_, cp1+2, height_per_node+1, height_, submatrix, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z);
-                threshold2(k_l_, cp1+4, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z);
-                threshold2(k_l_, cp1+6, height_per_node+1, height_, submatrix, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z); 
+                threshold2(k_l_, cp1, height_per_node+1, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp1+2, height_per_node+1, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp1+4, height_per_node+1, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z);
+                threshold2(k_l_, cp1+6, height_per_node+1, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, ((z_min+z_max)/2)+1, z_max, x_min, y_min, z); 
                 
             }
 
@@ -847,10 +846,10 @@ class k3_tree : public k3_tree_base<>
                 // std::cout << "Hoja con 0s" << std::endl;
                 //return
             } else {
-                int rangex[2] = {0, pow(2, height_)-1};
-                int rangey[2] = {0, pow(2, height_)-1};
+                int rangex[2] = {0, pow(2, k_height)-1};
+                int rangey[2] = {0, pow(2, k_height)-1};
                 
-                int position = pow(4, height_-1)*8;
+                int position = pow(4, k_height-1)*8;
                 position /= 2;
                 int tmp, dist = position;
                 // std::cout << "range_x: (" << rangex[0] << "," << rangex[1] << ")" << "\t";
@@ -1001,18 +1000,14 @@ class k3_tree : public k3_tree_base<>
 
         bit_vector k_l_thresh = bit_vector(pow(4, height-1)*8, 0);
 
-        // comnetario: borrar k_t como parametro, ya que es una variable perteneciente al objeto de por si
-        // submatrix borrar, height ver si se reemplaza por k_height
-        // eliminar las coordenadas x e y (no confundir con los rangos de x e y)
-        // declarar k_t y k_l dentro de la funcion o como atributo de clase temporal
         // std::cout << "Entrada 1" << std::endl;
-        threshold2(k_l_thresh, (size_t) 0, 1, height, submatrix_size_l, 0, x_max/2, 0, y_max/2, 0, z_max, 0, 0, thresh);
+        threshold2(k_l_thresh, (size_t) 0, 1, 0, x_max/2, 0, y_max/2, 0, z_max, 0, 0, thresh);
         // std::cout << "Entrada 2" << std::endl;
-        threshold2(k_l_thresh, (size_t) 2, 1, height, submatrix_size_l, 0, x_max/2, (y_max/2)+1, y_max, 0, z_max, 0, (y_max/2)+1, thresh);
+        threshold2(k_l_thresh, (size_t) 2, 1, 0, x_max/2, (y_max/2)+1, y_max, 0, z_max, 0, (y_max/2)+1, thresh);
         // std::cout << "Entrada 3" << std::endl;
-        threshold2(k_l_thresh, (size_t) 4, 1, height, submatrix_size_l, (x_max/2)+1, x_max, 0, y_max/2, 0, z_max, (x_max/2)+1, 0, thresh);
+        threshold2(k_l_thresh, (size_t) 4, 1, (x_max/2)+1, x_max, 0, y_max/2, 0, z_max, (x_max/2)+1, 0, thresh);
         // std::cout << "Entrada 4" << std::endl;
-        threshold2(k_l_thresh, (size_t) 6, 1, height, submatrix_size_l, (x_max/2)+1, x_max, (y_max/2)+1, y_max, 0, z_max, (x_max/2)+1, (y_max/2)+1, thresh);
+        threshold2(k_l_thresh, (size_t) 6, 1, (x_max/2)+1, x_max, (y_max/2)+1, y_max, 0, z_max, (x_max/2)+1, (y_max/2)+1, thresh);
         
         std::cout << "\n\nK_t_T: " ;
         for(int i=0; i<factor_t; i++){

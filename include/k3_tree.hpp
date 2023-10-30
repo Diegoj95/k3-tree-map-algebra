@@ -999,7 +999,7 @@ class k3_tree : public k3_tree_base<>
         // std::cout << "Entrada 4" << std::endl;
         threshold2(k_l_thresh, (size_t) 6, 1, (x_max/2)+1, x_max, (y_max/2)+1, y_max, 0, z_max, thresh);
         
-        std::cout << "\n\nK_t_T: " ;
+        std::cout << "\n\nK_t_T:                " ;
         for(int i=0; i<factor_t; i++){
             if(i%8==0 && i!=0){
                 std::cout << " ";
@@ -1008,7 +1008,7 @@ class k3_tree : public k3_tree_base<>
         }
         std::cout << std::endl;
 
-        std::cout << "K_l_T: ";
+        std::cout << "K_l_T:                 " ;
         for(int i=0; i<k_l_thresh.size(); i++){
                 if(i%8==0 && i!=0){
                     std::cout << " ";

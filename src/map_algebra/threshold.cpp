@@ -30,45 +30,76 @@ void run_thresh(std::string k3_tree_file_in, size_t thresh){
   
 }
 
-// template <typename k3_tree_type, typename t_bv=sdsl::bit_vector, 
-//           typename t_rank=typename t_bv::rank_1_type>
-// void thresh_brute(std::string k3_tree_file_in, size_t thresh) {
+template <typename k3_tree_type, typename t_bv=sdsl::bit_vector, 
+          typename t_rank=typename t_bv::rank_1_type>
+void thresh_brute(std::string k3_tree_file_in, size_t thresh) {
 
-//     int n = 0;
-//     long unsigned int size = k3_tree_file_in.get_max_size_x();
+    //************************//
+    // Load structure         //
+    //************************//
 
-//     size_type number_of_points = size * 2;
-//     size_type pos_x, pos_y, pos_z;
+    std::ifstream input_file(k3_tree_file_in);
+    assert(input_file.is_open() && input_file.good());
 
-//     std::vector<point_type> points(number_of_points);
+    k3_tree_type k3_tree;
+    k3_tree.load(input_file);
+    //************************//
 
-//     //************************//
-//     // Threshold              //
-//     //************************//
-//     // Iterate over all nodes
-//     for(int x=0; x<k3_tree_file_in.get_max_size_x(); x++) {
-//         // Iterate over all children
-//         for(int y=0; y<k3_tree_file_in.get_max_size_y(); y++) {
-//             // Iterate over all children
-//             for(int z=0; z<k3_tree_file_in.get_max_size_z(); z++) {
-//                 if (k3_tree.get(x,y,z) == 1) {
+    typedef sdsl::int_vector<>::size_type size_type;
+    std::string output_filename = k3_tree_file_in + ".thresh";
+
+    std::ofstream output_data(output_filename);
+    assert(output_data.is_open() && output_data.good());
+
+    
+
+    int n = 0;
+    size_type size = k3_tree.get_max_size_x();
+
+    size_type number_of_points = size * 2;
+    size_type pos_x, pos_y, pos_z;
+
+    std::vector<point_type> points(number_of_points);
+
+    //************************//
+    // Threshold              //
+    //************************//
+    // Iterate over all nodes
+
+    for(int x=0; x<size; x++) {
+        // Iterate over all children
+        for(int y=0; y<size; y++) {
+            // Iterate over all children
+            for(int z=0; z<size; z++) {
+                if (k3_tree.get(x,y,z) == 1) {
+                    pos_x = x;
+                    pos_y = y;
                     
-//                     if (z < thresh) {
-//                         points[n] = point_type(x, y, 0);
+                    if (z < thresh) {
+                        pos_z = 0;
+                        sdsl::write_member(pos_x, output_data);
+                        sdsl::write_member(pos_y, output_data);
+                        sdsl::write_member(pos_z, output_data);
 
-//                     } else {
-//                         points[n] = point_type(x, y, 1);
-//                     }
-//                     n+=1;
-//                 }
-//             }
-//         }
-//     }
-//     std::sort(points.begin(), points.end() );
-//     points.erase( std::unique( points.begin(), points.end() ), points.end() );
-//     k3_tree_type k3_tree_out(points, size);
-//     k3_tree_out.print();
-// }
+                    } else {
+                        pos_z = 1;
+                        sdsl::write_member(pos_x, output_data);
+                        sdsl::write_member(pos_y, output_data);
+                        sdsl::write_member(pos_z, output_data);
+                    }
+                    n+=1;
+                }
+            }
+        }
+    }
+    output_data.close();
+    std::sort(points.begin(), points.end() );
+    points.erase( std::unique( points.begin(), points.end() ), points.end() );
+    k3_tree_type k3_tree_out(output_filename, size);
+    std::cout << std::endl;
+    k3_tree_out.print();
+    
+}
 
 int main(int argc, char **argv) {
     
@@ -95,5 +126,5 @@ int main(int argc, char **argv) {
 
 
     run_thresh<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
-    // thresh_brute<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
+    thresh_brute<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
 }

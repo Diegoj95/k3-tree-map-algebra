@@ -31,6 +31,8 @@
 #include <sdsl/int_vector.hpp>
 #include <util/file.hpp>
 
+typedef sdsl::int_vector<>::size_type size_type;
+void data_raster(std::ofstream &output_data ,size_type size);
 
 void print_help(char * argv0) {
     printf("Usage: %s <size> <number_of_points> <output_data>\n", argv0);
@@ -50,6 +52,26 @@ int main(int argc, char **argv) {
     std::ofstream output_data(output_filename);
     assert(output_data.is_open() && output_data.good());
 
-    sdsl::add_random_points(size, number_of_points, output_data);
+    //sdsl::add_random_points(size, number_of_points, output_data);
+    data_raster(output_data, size);
     output_data.close();
+}
+
+void data_raster(std::ofstream &output_data ,size_type size){
+
+    size_type pos_x, pos_y, pos_z;
+    srand(time(NULL));
+
+    for(pos_x = 0; pos_x < size; pos_x++){
+        for(pos_y = 0; pos_y < size; pos_y++){
+            pos_z = rand() % size;
+            sdsl::write_member(pos_x, output_data);
+            sdsl::write_member(pos_y, output_data);
+            sdsl::write_member(pos_z, output_data);
+            std::cout << pos_x << " " << pos_y << " " << pos_z << std::endl;
+        }
+    }
+
+    output_data.close();
+
 }

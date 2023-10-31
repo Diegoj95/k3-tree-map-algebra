@@ -98,6 +98,8 @@ void thresh_brute(std::string k3_tree_file_in, size_t thresh) {
     k3_tree_type k3_tree_out(output_filename, size);
     std::cout << std::endl;
     k3_tree_out.print();
+    std::cout << std::endl;
+    k3_tree.print();
     
 }
 

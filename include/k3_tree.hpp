@@ -1017,16 +1017,27 @@ class k3_tree : public k3_tree_base<>
 
         std::cout << "K_l_T:                 " ;
         for(int i=0; i<k_l_thresh.size(); i++){
-                if(i%8==0 && i!=0){
-                    std::cout << " ";
-                }
-                std::cout << k_l_thresh[i];
+            if(i%8==0 && i!=0){
+                std::cout << " ";
             }
-            std::cout << std::endl;
+            std::cout << k_l_thresh[i];
+        }
+        std::cout << std::endl;
+
+        t_bv        k_t_thresh_bv = t_bv(k_t_thresh);
+        t_rank k_rank_thresh = t_rank(&k_t_thresh_bv);
+
+        std::cout << "k_rank_thresh: " ;
+        for(int i=0; i<k_rank_thresh.size(); i++){
+            if(i%8==0 && i!=0){
+                std::cout << " ";
+            }
+            std::cout << k_rank_thresh(i);
+        }
+        std::cout << std::endl;
+
 
         return true;
-
-        //k3_tree& operator=(k3_tree& tr)
         
     }
 

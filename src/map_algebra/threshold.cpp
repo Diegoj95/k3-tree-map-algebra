@@ -4,6 +4,7 @@
 #include <sdsl/vectors.hpp>
 #include <k3_tree_points.hpp>
 #include <k3_tree_level.hpp>
+#include <time.h>
 
 typedef sdsl::k3_tree_base<>::size_type size_type;
 typedef sdsl::k3_tree_base<>::size_type pos_type;
@@ -99,7 +100,7 @@ void thresh_brute(std::string k3_tree_file_in, size_t thresh) {
     std::cout << std::endl;
     k3_tree_out.print();
     std::cout << std::endl;
-    k3_tree.print();
+    //k3_tree.print();
     
 }
 
@@ -126,7 +127,17 @@ int main(int argc, char **argv) {
     sdsl::read_member(k3_tree_type, input_file);
     input_file.close();
 
-
+    //calculate time for run_tresh function
+    clock_t begin = clock();
     run_thresh<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
+    clock_t end = clock();
+    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+    std::cout << "Time for run_thresh function: " << elapsed_secs << "\n" << std::endl;
+
+    //calculate time for thresh_brute function
+    clock_t begin2 = clock();
     thresh_brute<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
-}
+    clock_t end2 = clock();
+    double elapsed_secs2 = double(end2 - begin2) / CLOCKS_PER_SEC;
+    std::cout << "Time for thresh_brute function: " << elapsed_secs2 << "\n" << std::endl;
+}   

@@ -1024,18 +1024,30 @@ class k3_tree : public k3_tree_base<>
         }
         std::cout << std::endl;
 
-        t_bv        k_t_thresh_bv = t_bv(k_t_thresh);
+        t_bv   k_t_thresh_bv = t_bv(k_t_thresh);
+        t_bv   k_l_thresh_bv = t_bv(k_l_thresh);
         t_rank k_rank_thresh = t_rank(&k_t_thresh_bv);
 
-        std::cout << "k_rank_thresh: " ;
-        for(int i=0; i<k_rank_thresh.size(); i++){
-            if(i%8==0 && i!=0){
-                std::cout << " ";
-            }
-            std::cout << k_rank_thresh(i);
-        }
-        std::cout << std::endl;
-
+        k3_tree k3_out = k3_tree();
+        k3_out.k_t = k_t_thresh_bv;
+        k3_out.k_l = k_l_thresh_bv;
+        //k3_out->k_t_rank = &k_rank_thresh;
+        k3_out.k_t_rank.set_vector(&k_t_thresh_bv);
+        k3_out.k_k1 = k_k1;
+        k3_out.k_k2 = k_k2;
+        k3_out.k_height = k_height;
+        k3_out.k_size = k_size;
+        //k3_out->size = this->size;
+        
+        //************************//
+        // Save structure         //
+        //************************//
+        std::string output_filename = "k3_output.thresh";
+        std::cout << std::endl << "\nStoring k3-tree structure in file: " << output_filename  << std::endl;
+        sdsl::store_to_file(k3_out, output_filename);
+   
+        std::string file_name = std::string(output_filename) + ".html";
+        sdsl::write_structure<sdsl::format_type::HTML_FORMAT>(k3_out, file_name);
 
         return true;
         

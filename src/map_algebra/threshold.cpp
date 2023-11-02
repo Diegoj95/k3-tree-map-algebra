@@ -88,7 +88,7 @@ void thresh_brute(std::string k3_tree_file_in, size_t thresh) {
                         sdsl::write_member(pos_y, output_data);
                         sdsl::write_member(pos_z, output_data);
                     }
-                    n+=1;
+                    continue;
                 }
             }
         }
@@ -101,6 +101,18 @@ void thresh_brute(std::string k3_tree_file_in, size_t thresh) {
     k3_tree_out.print();
     std::cout << std::endl;
     //k3_tree.print();
+
+    // ************************//
+    // Load structure         //
+    // ************************//
+
+    // std::ifstream input_files("k3_output.thresh");
+    // assert(input_files.is_open() && input_files.good());
+
+    // k3_tree_type k3_tree_compare;
+    // k3_tree_compare.load(input_files);
+
+    // std::cout << "It's equal: " << k3_tree_out.operator==(k3_tree_compare) << std::endl;
     
 }
 
@@ -132,12 +144,13 @@ int main(int argc, char **argv) {
     run_thresh<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-    std::cout << "Time for run_thresh function: " << elapsed_secs << "\n" << std::endl;
+    
 
     //calculate time for thresh_brute function
     clock_t begin2 = clock();
     thresh_brute<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
     clock_t end2 = clock();
     double elapsed_secs2 = double(end2 - begin2) / CLOCKS_PER_SEC;
+    std::cout << "Time for run_thresh function: " << elapsed_secs << "\n" << std::endl;
     std::cout << "Time for thresh_brute function: " << elapsed_secs2 << "\n" << std::endl;
 }   

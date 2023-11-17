@@ -18,17 +18,18 @@ template <typename k3_tree_type, typename t_bv=sdsl::bit_vector,
           typename t_rank=typename t_bv::rank_1_type>
 void scalar_sum(std::string k3_tree_file_in, size_t scalar){
     
-    // //************************//
-    // // Load structure         //
-    // //************************//
-    // std::ifstream input_file(k3_tree_file_in);
-    // assert(input_file.is_open() && input_file.good());
+    //************************//
+    // Load structure         //
+    //************************//
+    std::ifstream input_file(k3_tree_file_in);
+    assert(input_file.is_open() && input_file.good());
 
-    // k3_tree_type k3_tree;
-    // k3_tree.load(input_file);
-    // k3_tree.threshold(thresh);
-    // input_file.close();
-    return;
+    k3_tree_type k3_tree;
+    k3_tree.load(input_file);
+    
+    k3_tree.scalar_sum(scalar);
+    
+    input_file.close();
   
 }
 
@@ -39,7 +40,7 @@ void scalar_sum_brute(std::string k3_tree_file_in, size_t scalar) {
     //************************//
     // Load structure         //
     //************************//
-
+    std::cout << "Estoy brute?" << std::endl;
     std::ifstream input_file(k3_tree_file_in);
     assert(input_file.is_open() && input_file.good());
 
@@ -67,6 +68,7 @@ void scalar_sum_brute(std::string k3_tree_file_in, size_t scalar) {
     //************************//
     // Iterate over all nodes
 
+    int mayor = 0;
     for(int x=0; x<size; x++) {
         // Iterate over all children
         for(int y=0; y<size; y++) {
@@ -81,20 +83,31 @@ void scalar_sum_brute(std::string k3_tree_file_in, size_t scalar) {
                     sdsl::write_member(pos_y, output_data);
                     sdsl::write_member(pos_z, output_data);
 
+                    if(z>mayor){
+                        mayor = z;
+                    }
+
                     continue;
                 }
             }
         }
     }
+    std::cout << "hola" << std::endl;
     output_data.close();
     std::sort(points.begin(), points.end() );
     points.erase( std::unique( points.begin(), points.end() ), points.end() );
-
-    k3_tree_type k3_tree_out(output_filename, size + scalar);
-    std::cout << std::endl;
-    k3_tree_out.print();
-    std::cout << std::endl;
-    //k3_tree.print();
+    
+    if((mayor+scalar)>(size-1)){
+        k3_tree_type k3_tree_out(output_filename, mayor+scalar+1);
+        std::cout << std::endl;
+        k3_tree_out.print();
+        std::cout << std::endl;
+    }else{
+        k3_tree_type k3_tree_out(output_filename, size);
+        std::cout << std::endl;
+        k3_tree_out.print();
+        std::cout << std::endl;
+    }
 
     // ************************//
     // Load structure          //
@@ -133,10 +146,10 @@ int main(int argc, char **argv) {
     sdsl::read_member(k3_tree_type, input_file);
     input_file.close();
     
-
     //calculate time for run_sum function
     clock_t begin = clock();
-    // scalar_sum<sdsl::k3_tree<>>(k3_tree_file_in, scalar);
+    std::cout << "El clocl begin es " << begin << std::endl;
+    scalar_sum<sdsl::k3_tree<>>(k3_tree_file_in, scalar);
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 

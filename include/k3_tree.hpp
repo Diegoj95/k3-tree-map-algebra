@@ -1053,6 +1053,11 @@ class k3_tree : public k3_tree_base<>
         
     }
 
+    bool scalar_sum(int scalar) {
+        //print();
+        return true;
+    }
+
 }; // ENC CLASS k3-tree
 
 } // END NAMESPACE sdsl

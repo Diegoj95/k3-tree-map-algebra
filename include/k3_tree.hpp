@@ -1053,8 +1053,51 @@ class k3_tree : public k3_tree_base<>
         
     }
 
+    void scalar_sum2(t_bv &k_t_, t_bv &k_l_, 
+                    size_t np, int height_actual,
+                    pos_type x_min, pos_type x_max,
+                    pos_type y_min, pos_type y_max,
+                    pos_type z_min, pos_type z_max,
+                    pos_type sum, int mode){
+
+
+
+
+
+
+
+    }
+
     bool scalar_sum(int scalar) {
         //print();
+
+        bit_vector k_t_sum = bit_vector(k_t.size(), 0);
+        bit_vector k_l_sum = bit_vector(k_l.size(), 0);
+
+        std::cout << "Tamaño de k_t: "<< k_t_sum.size() << std::endl;
+        std::cout << "Tamaño de k_l: "<< k_l_sum.size() << std::endl;
+
+        pos_type node = k_height;
+
+        for(int i=2; scalar>0; i*=2){
+
+            std::cout << "scalar = "<< scalar << std::endl;
+            std::cout << "i = "<< i << std::endl;
+
+            node -= 1;
+            std::cout << "node = "<< node << std::endl;
+
+            if(scalar == 1) {             
+                scalar -= 1;
+
+            } else if(2*i > scalar) {
+                scalar -= i;
+                i = 1;
+                node = k_height;
+            }
+        }
+        std::cout << "scalar = "<< scalar << std::endl;
+
         return true;
     }
 

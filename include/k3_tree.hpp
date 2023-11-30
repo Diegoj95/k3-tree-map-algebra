@@ -630,22 +630,27 @@ class k3_tree : public k3_tree_base<>
                     if(k_t[node_pos]==1 && k_t[node_pos+1]==0){ // left
                         z_max = ((z_min+z_max)/2);
                         cp = k_t_rank (node_pos+1) * k_k1_3;
+                        get_z2(pos_x, pos_y, cp, height_per_node+1, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, z_value);
+                        get_z2(pos_x, pos_y, cp+2, height_per_node+1, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, z_max, z_value);
+                        get_z2(pos_x, pos_y, cp+4, height_per_node+1, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, z_max, z_value);
+                        get_z2(pos_x, pos_y, cp+6, height_per_node+1, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, z_max, z_value);
                     }else if(k_t[node_pos]==0 && k_t[node_pos+1]==1){ // right
                         z_min = ((z_min+z_max)/2)+1;
                         cp = k_t_rank (node_pos+2) * k_k1_3;
+                        get_z2(pos_x, pos_y, cp, height_per_node+1, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, z_value);
+                        get_z2(pos_x, pos_y, cp+2, height_per_node+1, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, z_max, z_value);
+                        get_z2(pos_x, pos_y, cp+4, height_per_node+1, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, z_max, z_value);
+                        get_z2(pos_x, pos_y, cp+6, height_per_node+1, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, z_max, z_value);
                     }
-                    get_z2(pos_x, pos_y, cp, height_per_node+1, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, z_value);
-                    get_z2(pos_x, pos_y, cp+2, height_per_node+1, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, z_max, z_value);
-                    get_z2(pos_x, pos_y, cp+4, height_per_node+1, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, z_max, z_value);
-                    get_z2(pos_x, pos_y, cp+6, height_per_node+1, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, z_max, z_value);
+                    
                 } 
             
             }else{ // Leaves nodes
                 size_t np0 = node_pos-k_t.size();
                 size_t np1 = np0+1; 
 
-                if(k_l[np0]==1) z_value = z_min;
-                else if(k_l[np1]==1) z_value = z_max;
+                if(k_l[np0]==1 && k_l[np1]==0) z_value = z_min;
+                else if(k_l[np0]==0 && k_l[np1]==1) z_value = z_max;
 
             }
         }
@@ -654,7 +659,7 @@ class k3_tree : public k3_tree_base<>
     size_type get_z(size_type pos_x, size_type pos_y){
 
         size_type size = get_max_size_z()-1;
-        size_type z_value = 999;
+        size_type z_value;
         get_z2(pos_x, pos_y, 0, 1, 0, size/2, 0, size/2, 0, size, z_value);
         get_z2(pos_x, pos_y, 2, 1, 0, size/2, (size/2)+1, size, 0, size, z_value);
         get_z2(pos_x, pos_y, 4, 1, (size/2)+1, size, 0, size/2, 0, size, z_value);

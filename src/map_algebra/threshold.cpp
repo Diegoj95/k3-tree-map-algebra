@@ -14,6 +14,22 @@ void print_help(char * argv0) {
     printf("Usage: %s <k3_tree_file> <threshold> <output_k3_tree_file>\n", argv0);
 }
 
+template <typename k3_tree_type, typename t_bv=sdsl::bit_vector,
+          typename t_rank=typename t_bv::rank_1_type>
+k3_tree_type get_k3(std::string k3_tree_filename) {
+    
+    //************************//
+    // Load structure         //
+    //************************//
+    std::ifstream input_file(k3_tree_filename);
+    assert(input_file.is_open() && input_file.good());
+    k3_tree_type k3_tree;
+    k3_tree.load(input_file);
+    input_file.close();
+    //k3_tree.print();
+    return k3_tree;  // Devuelve el objeto k3_tree creado y cargado
+}
+
 template <typename k3_tree_type, typename t_bv=sdsl::bit_vector, 
           typename t_rank=typename t_bv::rank_1_type>
 void run_thresh(std::string k3_tree_file_in, size_t thresh){
@@ -26,7 +42,11 @@ void run_thresh(std::string k3_tree_file_in, size_t thresh){
 
     k3_tree_type k3_tree;
     k3_tree.load(input_file);
+    clock_t begin = clock();
     k3_tree.threshold(thresh);
+    clock_t end = clock();
+    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+    std::cout << std::fixed << std::setprecision(10) << "Time for thresh_method function: " << elapsed_secs << "\n" << std::endl;
     input_file.close();
   
 }
@@ -53,7 +73,7 @@ void thresh_brute(std::string k3_tree_file_in, size_t thresh) {
     assert(output_data.is_open() && output_data.good());
 
     
-
+    clock_t begin2 = clock();
     int n = 0;
     size_type size = k3_tree.get_max_size_x();
 
@@ -97,9 +117,14 @@ void thresh_brute(std::string k3_tree_file_in, size_t thresh) {
     std::sort(points.begin(), points.end() );
     points.erase( std::unique( points.begin(), points.end() ), points.end() );
     k3_tree_type k3_tree_out(output_filename, size);
-    std::cout << std::endl;
-    k3_tree_out.print();
-    std::cout << std::endl;
+    clock_t end2 = clock();
+    double elapsed_secs2 = double(end2 - begin2) / CLOCKS_PER_SEC;
+    std::cout << std::fixed << std::setprecision(10) << "Time for thresh_get function: " << elapsed_secs2 << "\n" << std::endl;
+
+    // std::cout << std::endl;
+    // k3_tree_out.print();
+    // std::cout << std::endl;
+    
     //k3_tree.print();
 
     // ************************//
@@ -137,6 +162,7 @@ void thresh_brute2(std::string k3_tree_file_in, size_t thresh) {
     std::ofstream output_data(output_filename);
     assert(output_data.is_open() && output_data.good());
 
+    clock_t begin3 = clock();
     size_type size = k3_tree.get_max_size_x();
 
     size_type number_of_points = size * size;
@@ -172,9 +198,14 @@ void thresh_brute2(std::string k3_tree_file_in, size_t thresh) {
     std::sort(points.begin(), points.end() );
     points.erase( std::unique( points.begin(), points.end() ), points.end() );
     k3_tree_type k3_tree_out(output_filename, size);
-    std::cout << std::endl;
-    k3_tree_out.print();
-    std::cout << std::endl;
+    clock_t end3 = clock();
+    double elapsed_secs3 = double(end3 - begin3) / CLOCKS_PER_SEC;
+    std::cout << std::fixed << std::setprecision(10) << "Time for thresh_get_z function: " << elapsed_secs3 << "\n" << std::endl;
+
+    // std::cout << "Bruto2:" << std::endl;
+    // k3_tree_out.print();
+    // std::cout << std::endl;
+    
     //k3_tree.print();
 
     // ************************//
@@ -189,6 +220,24 @@ void thresh_brute2(std::string k3_tree_file_in, size_t thresh) {
 
     // std::cout << "It's equal: " << k3_tree_out.operator==(k3_tree_compare) << std::endl;
     
+}
+
+// Función para encontrar la posición del threshold 't' en el vector
+int findThresholdPosition(const std::vector<size_type>& vec, int t) {
+    int left = 0;
+    int right = vec.size();
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        if (vec[mid] < t) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+
+    return left; // Devuelve la posición donde comienzan los valores >= t
 }
 
 int main(int argc, char **argv) {
@@ -206,33 +255,46 @@ int main(int argc, char **argv) {
     size_t thresh = atoi(argv[2]);
     std::string k3_tree_file_out = argv[3];
     
-    // Read k3_type
-
-    std::ifstream input_file(k3_tree_file_in);
-    assert(input_file.is_open() && input_file.good());
-    ushort k3_tree_type;
-    sdsl::read_member(k3_tree_type, input_file);
-    input_file.close();
+    // Cargar la estructura //
+    auto k3_tree = get_k3<sdsl::k3_tree<>>(k3_tree_file_in);
 
     //calculate time for run_tresh function
-    clock_t begin = clock();
+    
+    //thresh_brute<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
+    
+    //thresh_brute2<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
+    
     run_thresh<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
-    clock_t end = clock();
-    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-    
 
-    //calculate time for thresh_brute function
-    clock_t begin2 = clock();
-    thresh_brute<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
-    clock_t end2 = clock();
-    double elapsed_secs2 = double(end2 - begin2) / CLOCKS_PER_SEC;
+    //k3_tree.print();
+
+    //////TEST//////
+    size_type newvaluev;
+    std::vector<size_type> v;        
+    int flag; 
     
-    clock_t begin3 = clock();
-    thresh_brute2<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
-    clock_t end3 = clock();
-    double elapsed_secs3 = double(end3 - begin3) / CLOCKS_PER_SEC;
-    
-    std::cout << "Time for run_thresh function: " << elapsed_secs << "\n" << std::endl;
-    std::cout << "Time for thresh_brute function: " << elapsed_secs2 << "\n" << std::endl;
-    std::cout << "Time for thresh_brute function: " << elapsed_secs3 << "\n" << std::endl;
+    for(int x=0; x<k3_tree.get_max_size_x(); x++){
+        for(int y=0; y<k3_tree.get_max_size_x(); y++){
+            newvaluev = k3_tree.get_z(x, y);
+            flag = 0;
+            
+            for(int i=0; i<v.size(); i++){
+                if(v[i]==newvaluev){
+                    flag = 1;
+                    break;
+                }
+            }
+            if(flag == 0){
+                v.push_back(newvaluev);
+                std::sort(v.begin(), v.end());
+            }
+        }
+    }
+
+    clock_t begin4 = clock();
+    int position = findThresholdPosition(v, thresh);
+    clock_t end4 = clock();
+    double elapsed_secs4 = double(end4 - begin4) / CLOCKS_PER_SEC;
+    std::cout << std::fixed << std::setprecision(10) << "Time for thresh_k2_acc function: " << elapsed_secs4 << "\n" << std::endl;
+    std::cout << "El threshold " << thresh << " se encuentra en la posición: " << position << std::endl;
 }   

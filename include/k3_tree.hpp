@@ -699,7 +699,7 @@ class k3_tree : public k3_tree_base<>
                         for(int j=y_min; j<=y_max; j++){
                              ///// TESTTTTTTT
                             // std::cout << "wasa" << std::endl;
-                            int rangex[2] = {0, pow(2, k_height)-1};
+                            int rangex[2] = {0, pow(2, k_height)-1}; //poner esto fuera de los for
                             int rangey[2] = {0, pow(2, k_height)-1};
                             int position = pow(4, k_height-1)*8;
                             position /= 2;
@@ -1077,23 +1077,23 @@ class k3_tree : public k3_tree_base<>
         // std::cout << "Entrada 4" << std::endl;
         threshold2(k_l_thresh, (size_t) 6, 1, (x_max/2)+1, x_max, (y_max/2)+1, y_max, 0, z_max, thresh, 0);
         
-        std::cout << "\n\nK_t_T:                " ;
-        for(int i=0; i<factor_t; i++){
-            if(i%8==0 && i!=0){
-                std::cout << " ";
-            }
-            std::cout << k_t_thresh[i];
-        }
-        std::cout << std::endl;
+        // std::cout << "\n\nK_t_T:                " ;
+        // for(int i=0; i<factor_t; i++){
+        //     if(i%8==0 && i!=0){
+        //         std::cout << " ";
+        //     }
+        //     std::cout << k_t_thresh[i];
+        // }
+        // std::cout << std::endl;
 
-        std::cout << "K_l_T:                 " ;
-        for(int i=0; i<k_l_thresh.size(); i++){
-            if(i%8==0 && i!=0){
-                std::cout << " ";
-            }
-            std::cout << k_l_thresh[i];
-        }
-        std::cout << std::endl;
+        // std::cout << "K_l_T:                 " ;
+        // for(int i=0; i<k_l_thresh.size(); i++){
+        //     if(i%8==0 && i!=0){
+        //         std::cout << " ";
+        //     }
+        //     std::cout << k_l_thresh[i];
+        // }
+        // std::cout << std::endl;
 
         t_bv   k_t_thresh_bv = t_bv(k_t_thresh);
         t_bv   k_l_thresh_bv = t_bv(k_l_thresh);
@@ -1114,7 +1114,7 @@ class k3_tree : public k3_tree_base<>
         // Save structure         //
         //************************//
         std::string output_filename = "k3_output.thresh";
-        std::cout << std::endl << "\nStoring k3-tree structure in file: " << output_filename  << std::endl;
+        //std::cout << std::endl << "\nStoring k3-tree structure in file: " << output_filename  << std::endl;
         sdsl::store_to_file(k3_out, output_filename);
    
         std::string file_name = std::string(output_filename) + ".html";

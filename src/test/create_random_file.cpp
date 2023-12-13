@@ -68,7 +68,7 @@ void data_raster(std::ofstream &output_data ,size_type size){
             sdsl::write_member(pos_x, output_data);
             sdsl::write_member(pos_y, output_data);
             sdsl::write_member(pos_z, output_data);
-            std::cout << pos_x << " " << pos_y << " " << pos_z << std::endl;
+            //std::cout << pos_x << " " << pos_y << " " << pos_z << std::endl;
         }
     }
 

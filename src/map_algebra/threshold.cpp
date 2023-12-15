@@ -5,6 +5,9 @@
 #include <k3_tree_points.hpp>
 #include <k3_tree_level.hpp>
 #include <time.h>
+#include <filesystem>
+#include <string>
+#include <string>
 
 typedef sdsl::k3_tree_base<>::size_type size_type;
 typedef sdsl::k3_tree_base<>::size_type pos_type;
@@ -175,7 +178,7 @@ void thresh_brute2(std::string k3_tree_file_in, size_t thresh) {
     //************************//
     // Iterate over all nodes
 
-
+    size_t point_counter = 0;
     for(int x=0; x<size; x++) {
         // Iterate over all children
         for(int y=0; y<size; y++) {
@@ -192,10 +195,19 @@ void thresh_brute2(std::string k3_tree_file_in, size_t thresh) {
             sdsl::write_member(pos_x, output_data);
             sdsl::write_member(pos_y, output_data);
             sdsl::write_member(pos_z, output_data);
+            point_counter+=1;
         }
     }
+    // Comparacion de espacio utilizado en los puntos de salida
+    std::cout << "Peso del vector de puntos: " << output_data.tellp() << std::endl;
     output_data.close();
     std::sort(points.begin(), points.end() );
+    
+    size_t total_size_in_bytes = point_counter * 24;
+    std::cout << "Total size of output_data in bytes: " << total_size_in_bytes << std::endl;
+    //std::filesystem::path file_path(output_filename);
+    //auto file_size = std::filesystem::file_size(file_path);
+    //std::cout << "Size of output file in bytes: " << file_size << std::endl;
     points.erase( std::unique( points.begin(), points.end() ), points.end() );
     k3_tree_type k3_tree_out(output_filename, size);
     clock_t end3 = clock();
@@ -262,9 +274,9 @@ int main(int argc, char **argv) {
     
     //thresh_brute<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
     
-    //thresh_brute2<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
+    thresh_brute2<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
     
-    run_thresh<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
+    //run_thresh<sdsl::k3_tree<>>(k3_tree_file_in, thresh);
 
     //k3_tree.print();
 

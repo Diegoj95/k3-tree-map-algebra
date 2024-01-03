@@ -672,33 +672,17 @@ class k3_tree : public k3_tree_base<>
                     pos_type y_min, pos_type y_max,
                     pos_type z_min, pos_type z_max,
                     pos_type thresh, int mode){
-        // std::cout << "height total: " << (int) k_height;
         // cambiar nombre de parametro z
         
         if(height_per_node < k_height){
-            // std::cout << "\theight actual: " << height_per_node << std::endl;
-            // std::cout << "x: (" << x_min << "," << x_max << ") ";
-            // std::cout << " y: (" << y_min << "," << y_max << ") ";
-            // std::cout << " z: (" << z_min << "," << z_max << ") " << std::endl;
-            // std::cout << "k_t[" << np << "] = " << k_t[np];
-            // std::cout << "\tk_t[" << np+1 << "] = " << k_t[np+1] << std::endl;
-            
-            // if(k_t[np] == 0 && k_t[np+1] == 0){
-            //     std::cout << " no hago nada" << std::endl;
 
-            // }else 
             if(k_t[np] == 0 && k_t[np+1] == 1 && mode==0){
                 
                 z_min = ((z_min+z_max)/2)+1;
-                // std::cout << "z_min: " << z_min << "  >   thresh(" << z << ")" << " ---> ";
+
                 if (thresh < z_min) {
-                    // std::cout << "Relleno a partir del nodo: " << np << " con 01 (mayor que T)" << std::endl;
-                    
-                    //std::cout << std::endl;
                     for(int i=x_min; i<=x_max; i++){
                         for(int j=y_min; j<=y_max; j++){
-                             ///// TESTTTTTTT
-                            // std::cout << "wasa" << std::endl;
                             int rangex[2] = {0, pow(2, k_height)-1}; //poner esto fuera de los for
                             int rangey[2] = {0, pow(2, k_height)-1};
                             int position = pow(4, k_height-1)*8;
@@ -707,11 +691,7 @@ class k3_tree : public k3_tree_base<>
                             
                             for(int k=0; rangex[0]!=rangex[1] || rangey[0]!=rangey[1]; k++){
                                 
-                                // std::cout << "rangex["<< rangex[0] << "," << rangex[1] << "]" << std::endl;
-                                // std::cout << "rangey["<< rangey[0] << "," << rangey[1] << "]" << std::endl;
-                                // std::cout << "posicion kl: " << position << std::endl;
                                 dist /= 2;
-                                // std::cout << "dist: " << dist << std::endl;
                                 
                                 if(k%2==0){
                                     tmp = (rangex[0]+rangex[1])/2;
@@ -732,46 +712,18 @@ class k3_tree : public k3_tree_base<>
                                         position += dist;
                                     }
                                 }
-
-                                // std::cout << "tmp: " << tmp << std::endl;
-
-                                // std::cout << std::endl;
-
                             }
 
                             if (k_l_[position] == 0 && k_l_[position-1] == 0) {
                                 k_l_[position] = 1;
                             }
-
-                            // std::cout << "x: " << i << " y: " << j << std::endl;
-                            // std::cout << "k_l[" << position << "] = " << 1 << std::endl;
-
-                            ////// FIN TESTTTTT
                         }
-                        
                     }
-                    //std::cout << "i" << x_min << " " << x_max << "  j" << y_min << " " << y_max << std::endl;
-
-                    ///////// PRINT ///////////
-                    // std::cout<< "k_l_thresh = ";
-                    // for(int i=0; i<k_l_.size(); i++){
-                    //     if(i%8==0 && i!=0){
-                    //         std::cout << " ";
-                    //     }
-                    //     std::cout << k_l_[i];
-                    // }
-                    // std::cout << "\n" << std::endl;
-
                     return;
                 }
-                
-                // std::cout << " me voy a la derecha" << std::endl;
-                // submatrix /= k_k1;
+
                 size_type cp = k_t_rank (np+2) * k_k1_3;
-                // std::cout << "submatrix " << submatrix << std::endl;
-                // std::cout << "np " << np;
-                // std::cout << "\tcp " << cp << "\tk_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
-                // std::cout << std::endl;
+
                 threshold2(k_l_, cp, height_per_node+1, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, thresh, 0);
                 threshold2(k_l_, cp+2, height_per_node+1, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, z_max, thresh, 0);
                 threshold2(k_l_, cp+4, height_per_node+1, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, z_max, thresh, 0);
@@ -781,29 +733,18 @@ class k3_tree : public k3_tree_base<>
             }else if(k_t[np] == 1 && k_t[np+1] == 0 && mode==0){
 
                 z_max = ((z_min+z_max)/2);
-                // std::cout << "z_max: " << z_max << "  <   thresh(" << z << ")" << std::endl;
 
                 if (thresh > z_max) {
-                    // std::cout << "Relleno a partir del nodo: " << np << " con 10 (menor que T)" << std::endl;
-                    
-                    //std::cout << std::endl;
                     for(int i=x_min; i<=x_max; i++){
                         for(int j=y_min; j<=y_max; j++){
-                             ///// TESTTTTTTT
-                            // std::cout << "wasa" << std::endl;
                             int rangex[2] = {0, pow(2, k_height)-1};
                             int rangey[2] = {0, pow(2, k_height)-1};
                             int position = pow(4, k_height-1)*8;
                             position /= 2;
                             int tmp, dist = position;
                             
-                            for(int k=0; rangex[0]!=rangex[1] || rangey[0]!=rangey[1]; k++){
-                                
-                                // std::cout << "rangex["<< rangex[0] << "," << rangex[1] << "]" << std::endl;
-                                // std::cout << "rangey["<< rangey[0] << "," << rangey[1] << "]" << std::endl;
-                                // std::cout << "posicion kl: " << position << std::endl;
+                            for(int k=0; rangex[0]!=rangex[1] || rangey[0]!=rangey[1]; k++){                         
                                 dist /= 2;
-                                // std::cout << "dist: " << dist << std::endl;
                                 
                                 if(k%2==0){
                                     tmp = (rangex[0]+rangex[1])/2;
@@ -825,63 +766,30 @@ class k3_tree : public k3_tree_base<>
                                     }
                                 }
 
-                                // std::cout << "tmp: " << tmp << std::endl;
-                                // std::cout << std::endl;
-
                             }
 
                             if (k_l_[position] == 0 && k_l_[position-1] == 0) {
                                 k_l_[position-1] = 1;
                             }
 
-                            // std::cout << "x: " << i << " y: " << j << std::endl;
-                            // std::cout << "k_l[" << position-1 << "] = " << 1 << std::endl;
-
-
-
-                            ////// FIN TESTTTTT
                         }
                         
                     }
-                    //std::cout << "i" << x_min << " " << x_max << "  j" << y_min << " " << y_max << std::endl;
-                    
-                    ///////// PRINT ///////////
-                    // std::cout<< "k_l_thresh = ";
-                    // for(int i=0; i<k_l_.size(); i++){
-                    //     if(i%8==0 && i!=0){
-                    //         std::cout << " ";
-                    //     }
-                    //     std::cout << k_l_[i];
-                    // }
-                    // std::cout << "\n" << std::endl;
-
-
 
                     return;
                 }
 
-                // std::cout << " me voy a la izquierda" << std::endl;
-                // submatrix /= k_k1;
                 size_type cp = k_t_rank (np+1) * k_k1_3;
-                // std::cout << "submatrix " << submatrix << std::endl;
-                // std::cout << "np " << np << std::endl;
-                // std::cout << "cp " << cp << "    k_t_rank " << k_t_rank (np+1) * k_k1_3 << std::endl;
-                // std::cout << std::endl;
                 threshold2(k_l_, cp, height_per_node+1, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, z_max, thresh, 0);
                 threshold2(k_l_, cp+2, height_per_node+1, x_min, (x_max+x_min)/2, ((y_min+y_max)/2)+1, y_max, z_min, z_max, thresh, 0);
                 threshold2(k_l_, cp+4, height_per_node+1, ((x_min+x_max)/2)+1, x_max, y_min, (y_min+y_max)/2, z_min, z_max, thresh, 0);
                 threshold2(k_l_, cp+6, height_per_node+1, ((x_min+x_max)/2)+1, x_max, ((y_min+y_max)/2)+1, y_max, z_min, z_max, thresh, 0); 
                                 
             }else{
-                // std::cout << " me voy a ambos lados" << std::endl;
-                // submatrix /= k_k1;
+
                 size_type cp0 = k_t_rank (np+1) * k_k1_3; // left
                 size_type cp1 = k_t_rank (np+2) * k_k1_3; // right
-                // std::cout << "submatrix " << submatrix << std::endl;
-                // std::cout << "np " << np << std::endl;
-                // std::cout << "cp0 " << cp0 << "    k_t_rank " << k_t_rank (np+1) * k_k1_3 << std::endl;
-                // std::cout << "cp1 " << cp1 << "    k_t_rank " << k_t_rank (np+2) * k_k1_3 << std::endl;
-                // std::cout << std::endl;
+
                 if (k_t[np]==1){
                     // left
                     threshold2(k_l_, cp0, height_per_node+1, x_min, (x_max+x_min)/2, y_min, (y_min+y_max)/2, z_min, ((z_min+z_max)/2), thresh, 1);
@@ -904,13 +812,11 @@ class k3_tree : public k3_tree_base<>
 
         } else {
 
-            // std::cout << "\nnp = " << np << " (last level)" << std::endl;
             size_t np0 = np-k_t.size();
             size_t np1 = np0+1; 
-            // std::cout << "k_l[" << (np0) << "] = " << k_l[np0] << ", con k_t.size=" << k_t.size() << std::endl;
-            // std::cout << "k_l[" << (np1) << "] = " << k_l[np1] << ", con k_t.size=" << k_t.size() << std::endl;
+
             
-            // desicion           
+            // decition          
             if(k_l[np0]==0 && k_l[np1]==0){
                 // std::cout << "Hoja con 0s" << std::endl;
                 //return
@@ -921,16 +827,11 @@ class k3_tree : public k3_tree_base<>
                 int position = pow(4, k_height-1)*8;
                 position /= 2;
                 int tmp, dist = position;
-                // std::cout << "range_x: (" << rangex[0] << "," << rangex[1] << ")" << "\t";
-                // std::cout << "range_y: (" << rangey[0] << "," << rangey[1] << ")" << "\t";
-                // std::cout << "X: " << x_min << " Y: " << y_min << std::endl;
+
                 for(int i=0; rangex[0]!=rangex[1] || rangey[0]!=rangey[1]; i++){
-                    // std::cout << "rangex["<< rangex[0] << "," << rangex[1] << "]" << "\t";
-                    // std::cout << "rangey["<< rangey[0] << "," << rangey[1] << "]" << std::endl;
-                    // std::cout << "posicion k_l: " << position << "\t";
+
                     dist /= 2;
-                    // std::cout << "dist: " << dist << std::endl;
-                    // std::cout << std::endl;
+
                     if(i%2==0){
                         tmp = (rangex[0]+rangex[1])/2;
                         if(x_min<=tmp){
@@ -951,10 +852,7 @@ class k3_tree : public k3_tree_base<>
                         }
                     }
                 }
-                // std::cout << "posicion de k_l: " << position << std::endl;
 
-                // std::cout << "rango z: " << z_min << " " << z_max << std::endl;
-                // std::cout << "k_l: " << k_l[np0] << "  y " << k_l[np1] << std::endl;
                 if (k_l[np0]==1 && thresh<=z_min) { // greater than threshold
                     k_l_[position-1] = 0;
                     k_l_[position] = 1;
@@ -976,65 +874,14 @@ class k3_tree : public k3_tree_base<>
                 }
             }
 
-            ///////// PRINT ///////////
-            // std::cout<< "k_l_thresh = ";
-            // for(int i=0; i<k_l_.size(); i++){
-            //     if(i%8==0 && i!=0){
-            //         std::cout << " ";
-            //     }
-            //     std::cout << k_l_[i];
-            // }
-            // std::cout << std::endl;
-
-            
-
         }
-        
-
+    
     }
 
     bool threshold(int thresh) {
-    
-        // size_t node_pos;
-        // size_t children_pos = 0;
-        // uint8_t k = k_k1;
-        // size_t k_k1_3 = pow(k, 3);
-
-        ///////// PRINT ///////////
-        // std::cout<< "submatriz_size_l = " << submatrix_size_l << std::endl;
-        // std::cout<< "k = " << unsigned(k) << std::endl;
-        // std::cout<< "k_t_rank = ";
-        // for(int i=0; i<k_t_rank.size(); i++){
-        //     std::cout << k_t_rank (i) << " " ;
-        // }
-        // std::cout << std::endl;
-        
-        ///////// PRINT ///////////
-        // std::cout << "k_height = " << unsigned(k_height) << std::endl;
-
-        // ///////// PRINT ///////////
-        // std::cout<< "k_t = ";
-        // for(int i=0; i<k_t.size(); i++){
-        //     if(i%8==0 && i!=0){
-        //         std::cout << " ";
-        //     }
-        //     std::cout << k_t[i];
-        // }
-        // std::cout << std::endl;
-
-        // ///////// PRINT ///////////
-        // std::cout<< "k_l = ";
-        // for(int i=0; i<k_l.size(); i++){
-        //     if(i%8==0 && i!=0){
-        //         std::cout << " ";
-        //     }
-        //     std::cout << k_l[i];
-        // }
-        // std::cout << std::endl;  
  
         int factor_t = 0;
-        // int height = unsigned(k_height);
-        // bit_vector k_t_thresh = bit_vector(factor_t, 0);
+
 
         for(int i=0; i<k_height-1; i++){
             factor_t += pow(4, i)*8;   
@@ -1042,25 +889,13 @@ class k3_tree : public k3_tree_base<>
 
         bit_vector k_t_thresh = bit_vector(factor_t, 0);
 
-        ///////// PRINT ///////////
-        // std::cout << "factor_t = " << factor_t << std::endl;
-
 
         for(int i=0; i<factor_t; i++){
             if(i%2 == 0){
                 k_t_thresh[i] = 1;
             }
         }
-        
-        ///////// PRINT ///////////
-        // std::cout<< "k_t_thresh = ";
-        // for(int i=0; i<factor_t; i++){
-        //     if(i%8==0 && i!=0){
-        //         std::cout << " ";
-        //     }
-        //     std::cout << k_t_thresh[i];
-        // }
-        // std::cout << std::endl;
+
 
         pos_type x_max = get_max_size_x()-1;
         pos_type y_max = get_max_size_y()-1;
@@ -1077,23 +912,6 @@ class k3_tree : public k3_tree_base<>
         // std::cout << "Entrada 4" << std::endl;
         threshold2(k_l_thresh, (size_t) 6, 1, (x_max/2)+1, x_max, (y_max/2)+1, y_max, 0, z_max, thresh, 0);
         
-        // std::cout << "\n\nK_t_T:                " ;
-        // for(int i=0; i<factor_t; i++){
-        //     if(i%8==0 && i!=0){
-        //         std::cout << " ";
-        //     }
-        //     std::cout << k_t_thresh[i];
-        // }
-        // std::cout << std::endl;
-
-        // std::cout << "K_l_T:                 " ;
-        // for(int i=0; i<k_l_thresh.size(); i++){
-        //     if(i%8==0 && i!=0){
-        //         std::cout << " ";
-        //     }
-        //     std::cout << k_l_thresh[i];
-        // }
-        // std::cout << std::endl;
 
         t_bv   k_t_thresh_bv = t_bv(k_t_thresh);
         t_bv   k_l_thresh_bv = t_bv(k_l_thresh);
@@ -1130,12 +948,6 @@ class k3_tree : public k3_tree_base<>
                     pos_type y_min, pos_type y_max,
                     pos_type z_min, pos_type z_max,
                     pos_type sum, int mode){
-
-
-
-
-
-
 
     }
 
